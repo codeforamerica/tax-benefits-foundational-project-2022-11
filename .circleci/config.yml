@@ -1,0 +1,182 @@
+---
+version: 2.1
+
+executors:
+  ruby_executor:
+    working_directory: /mnt/ramdisk
+    docker:
+      - image: circleci/ruby:3.1.2-node-browsers
+  rails_executor:
+    working_directory: /mnt/ramdisk
+    docker:
+      - image: circleci/ruby:3.1.2-node-browsers
+        environment:
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: cimg/postgres:13.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle-test_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        command: postgres -c 'fsync=false' -c 'synchronous_commit=off'
+    resource_class: xlarge
+commands:
+  install_system_dependencies:
+    description: "Install system dependencies"
+    steps:
+      - run:
+          name: install system dependencies
+          command: |
+            # The CircleCI environment is based on Debian buster, which used to be called stable Debian, but is now called oldstable.
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            sudo apt-get update --allow-releaseinfo-change && \
+            sudo apt-get update && \
+            sudo apt-get install -y pdftk ghostscript
+  install_js_dependencies:
+    description: "Install JS dependencies"
+    steps:
+      - restore_cache:
+          key: yarn-{{ checksum "yarn.lock" }}
+      - run:
+          name: yarn install --frozen-lockfile
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          key: yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - /mnt/ramdisk/node_modules
+            - ~/.npm
+  install_ruby_dependencies:
+    description: "Install Ruby dependencies"
+    steps:
+      - restore_cache:
+          key: bundle-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: install bundler & ruby dependencies
+          command: |
+            gem install bundler:2.3.5 --no-document && \
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          key: bundle-{{ checksum "Gemfile.lock" }}
+          paths: [/mnt/ramdisk/vendor/bundle]
+  #  setup_test_db_for_parallel:
+  #    description: "Setup test database"
+  #    steps:
+  #      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+  #      - run: bundle exec rake db:create db:schema:load parallel:create[12] parallel:prepare[12]
+  #  setup_test_db:
+  #    description: "Setup test database"
+  #    steps:
+  #      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+  #      - run: bundle exec rake db:create db:schema:load
+  setup_webdriver:
+    description: Install Ruby webdriver
+    steps:
+      - run: date -I > /tmp/today && cat /tmp/today
+      - restore_cache:
+          key: webdrivers-v2-{{ checksum "/tmp/today" }}
+      - run: if [ ! -f ~/.webdrivers/chromedriver ] ; then bundle exec rake webdrivers:chromedriver:update ; fi
+      - save_cache:
+          key: webdrivers-v2-{{ checksum "/tmp/today" }}
+          paths: [~/.webdrivers]
+jobs:
+  i18n_normalize:
+    executor: ruby_executor
+    steps:
+      - checkout
+      - install_ruby_dependencies
+      - run: bundle exec i18n-tasks normalize
+      - run: git config --global user.name CircleCI && git config --global user.email circleci@example.com
+      - add_ssh_keys:
+          fingerprints:
+            - "0a:b8:14:ae:05:dd:17:9c:f4:6e:3c:45:81:8f:06:8d"
+      - run: git diff --quiet || (git commit -am "Run i18n-tasks normalize" && git push origin translations_config-locales-en-yml--main_es)
+#  run_js_tests:
+#    executor: ruby_executor
+#    steps:
+#      - checkout
+#      - install_js_dependencies
+#      - run: mkdir ~/test-results && mkdir ~/test-results/rspec && mkdir ~/test-results/jest
+#      - run:
+#          command: npm test --ci --runInBand --reporters=default --reporters=jest-junit
+#          environment:
+#            JEST_JUNIT_OUTPUT_DIR: ./test-results/jest/
+#      - store_test_results:
+#          path: ~/test-results
+  run_annotate:
+    executor: rails_executor
+    steps:
+      - checkout
+      - install_ruby_dependencies
+      # - setup_test_db
+      - run: bundle exec annotate --frozen
+  run_ruby_tests:
+    executor: rails_executor
+    steps:
+      - checkout
+      - install_js_dependencies
+      - install_system_dependencies
+      - install_ruby_dependencies
+      # - setup_test_db_for_parallel
+      - setup_webdriver
+      - restore_cache:
+          key: parallel-runtime-{{ checksum "/tmp/today" }}
+      - run: RAILS_ENV=test bin/webpack
+      - run: EAGER_LOAD=1 RAILS_CACHE_CLASSES=1 bundle exec parallel_rspec -n 12 || touch /tmp/re-run
+      - run: |
+          if [ -f /tmp/re-run ] ; then TEST_FILE_PREFIX=retry_ EAGER_LOAD=1 RAILS_CACHE_CLASSES=1 bundle exec parallel_rspec -n 12 -- --only-failures -- ; fi
+      - store_test_results:
+          path: tmp/rspec-parallel-test-results
+      - store_artifacts:
+          path: /tmp/failure_screenshots
+      - save_cache:
+          key: parallel-runtime-{{ checksum "/tmp/today" }}
+          paths: [tmp/parallel_runtime_rspec.log]
+#  deploy_to_aptible--demo:
+#    executor: ruby_executor
+#    steps:
+#      - checkout
+#      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
+#      - run: git fetch --depth=1000000
+#      - run: git push git@beta.aptible.com:vita-min-demo/vita-min-demo.git $CIRCLE_SHA1:master
+#    parallelism: 1
+#  deploy_to_aptible--staging:
+#    executor: ruby_executor
+#    steps:
+#      - checkout
+#      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
+#      - run: git fetch --depth=1000000
+#      - run: git push git@beta.aptible.com:vita-min-staging/vita-min-staging.git $CIRCLE_SHA1:master
+#    parallelism: 1
+#  deploy_to_aptible--production:
+#    executor: ruby_executor
+#    steps:
+#      - checkout
+#      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
+#      - run: git fetch --depth=1000000
+#      - run: git push git@beta.aptible.com:vita-min-prod/vita-min-prod.git $CIRCLE_SHA1:master
+#    parallelism: 1
+workflows:
+  version: 2
+  ci-and-deploy:
+    jobs:
+      - i18n_normalize:
+          filters:
+            branches:
+              only: translations_config-locales-en-yml--main_es
+      - run_ruby_tests
+      - run_annotate
+#      - deploy_to_aptible--demo:
+#          requires: [run_js_tests, run_ruby_tests]
+#          filters:
+#            branches:
+#              only: main
+#      - deploy_to_aptible--staging:
+#          requires: [run_js_tests, run_ruby_tests]
+#          filters:
+#            branches:
+#              only: staging
+#      - deploy_to_aptible--production:
+#          requires: [run_js_tests, run_ruby_tests]
+#          filters:
+#            branches:
+#              only: release
