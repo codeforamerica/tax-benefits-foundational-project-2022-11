@@ -90,62 +90,16 @@ jobs:
           fingerprints:
             - "0a:b8:14:ae:05:dd:17:9c:f4:6e:3c:45:81:8f:06:8d"
       - run: git diff --quiet || (git commit -am "Run i18n-tasks normalize" && git push origin translations_config-locales-en-yml--main_es)
-#  run_js_tests:
-#    executor: ruby_executor
-#    steps:
-#      - checkout
-#      - install_js_dependencies
-#      - run: mkdir ~/test-results && mkdir ~/test-results/rspec && mkdir ~/test-results/jest
-#      - run:
-#          command: npm test --ci --runInBand --reporters=default --reporters=jest-junit
-#          environment:
-#            JEST_JUNIT_OUTPUT_DIR: ./test-results/jest/
-#      - store_test_results:
-#          path: ~/test-results
-  run_annotate:
-    executor: rails_executor
-    steps:
-      - checkout
-      - install_ruby_dependencies
-      - setup_test_db
-      - run: bundle exec annotate --frozen
   run_ruby_tests:
     executor: rails_executor
     steps:
       - checkout
-      # - install_js_dependencies
       - install_system_dependencies
       - install_ruby_dependencies
       - setup_test_db_for_parallel
-      # - setup_webdriver
-      # - run: RAILS_ENV=test bin/webpack
       - run: bundle exec rspec
       - store_test_results:
           path: tmp/rspec-test-results
-#  deploy_to_aptible--demo:
-#    executor: ruby_executor
-#    steps:
-#      - checkout
-#      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
-#      - run: git fetch --depth=1000000
-#      - run: git push git@beta.aptible.com:vita-min-demo/vita-min-demo.git $CIRCLE_SHA1:master
-#    parallelism: 1
-#  deploy_to_aptible--staging:
-#    executor: ruby_executor
-#    steps:
-#      - checkout
-#      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
-#      - run: git fetch --depth=1000000
-#      - run: git push git@beta.aptible.com:vita-min-staging/vita-min-staging.git $CIRCLE_SHA1:master
-#    parallelism: 1
-#  deploy_to_aptible--production:
-#    executor: ruby_executor
-#    steps:
-#      - checkout
-#      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
-#      - run: git fetch --depth=1000000
-#      - run: git push git@beta.aptible.com:vita-min-prod/vita-min-prod.git $CIRCLE_SHA1:master
-#    parallelism: 1
 workflows:
   version: 2
   ci-and-deploy:
@@ -156,18 +110,3 @@ workflows:
               only: translations_config-locales-en-yml--main_es
       - run_ruby_tests
       - run_annotate
-#      - deploy_to_aptible--demo:
-#          requires: [run_js_tests, run_ruby_tests]
-#          filters:
-#            branches:
-#              only: main
-#      - deploy_to_aptible--staging:
-#          requires: [run_js_tests, run_ruby_tests]
-#          filters:
-#            branches:
-#              only: staging
-#      - deploy_to_aptible--production:
-#          requires: [run_js_tests, run_ruby_tests]
-#          filters:
-#            branches:
-#              only: release
