@@ -109,4 +109,3 @@ workflows:
             branches:
               only: translations_config-locales-en-yml--main_es
       - run_ruby_tests
-      - run_annotate
