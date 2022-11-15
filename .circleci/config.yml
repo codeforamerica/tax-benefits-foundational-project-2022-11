@@ -58,16 +58,16 @@ commands:
       - save_cache:
           key: bundle-{{ checksum "Gemfile.lock" }}
           paths: [/mnt/ramdisk/vendor/bundle]
-  #  setup_test_db_for_parallel:
-  #    description: "Setup test database"
-  #    steps:
-  #      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
-  #      - run: bundle exec rake db:create db:schema:load parallel:create[12] parallel:prepare[12]
-  #  setup_test_db:
-  #    description: "Setup test database"
-  #    steps:
-  #      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
-  #      - run: bundle exec rake db:create db:schema:load
+  setup_test_db_for_parallel:
+    description: "Setup test database"
+    steps:
+      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run: bundle exec rake db:create db:schema:load
+  setup_test_db:
+    description: "Setup test database"
+    steps:
+      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run: bundle exec rake db:create db:schema:load
   setup_webdriver:
     description: Install Ruby webdriver
     steps:
@@ -107,30 +107,21 @@ jobs:
     steps:
       - checkout
       - install_ruby_dependencies
-      # - setup_test_db
+      - setup_test_db
       - run: bundle exec annotate --frozen
   run_ruby_tests:
     executor: rails_executor
     steps:
       - checkout
-      - install_js_dependencies
+      # - install_js_dependencies
       - install_system_dependencies
       - install_ruby_dependencies
-      # - setup_test_db_for_parallel
-      - setup_webdriver
-      - restore_cache:
-          key: parallel-runtime-{{ checksum "/tmp/today" }}
-      - run: RAILS_ENV=test bin/webpack
-      - run: EAGER_LOAD=1 RAILS_CACHE_CLASSES=1 bundle exec parallel_rspec -n 12 || touch /tmp/re-run
-      - run: |
-          if [ -f /tmp/re-run ] ; then TEST_FILE_PREFIX=retry_ EAGER_LOAD=1 RAILS_CACHE_CLASSES=1 bundle exec parallel_rspec -n 12 -- --only-failures -- ; fi
+      - setup_test_db_for_parallel
+      # - setup_webdriver
+      # - run: RAILS_ENV=test bin/webpack
+      - run: bundle exec rspec
       - store_test_results:
-          path: tmp/rspec-parallel-test-results
-      - store_artifacts:
-          path: /tmp/failure_screenshots
-      - save_cache:
-          key: parallel-runtime-{{ checksum "/tmp/today" }}
-          paths: [tmp/parallel_runtime_rspec.log]
+          path: tmp/rspec-test-results
 #  deploy_to_aptible--demo:
 #    executor: ruby_executor
 #    steps:
