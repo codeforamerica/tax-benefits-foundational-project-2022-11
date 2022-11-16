@@ -1,24 +1,11 @@
-# README
+## Notes
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+In the event of an issue when attempting to run `bundle install` that a message that matches the following:
 
-Things you may want to cover:
+```
+Your bundle only supports platforms ["arm64-darwin-21"] but your local platform
+is x86_64-linux. Add the current platform to the lockfile with
+`bundle lock --add-platform x86_64-linux` and try again.
+```
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Try running the suggested command to pull in the necessary platform-specific dependencies.
