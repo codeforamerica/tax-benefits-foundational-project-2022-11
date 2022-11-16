@@ -13,7 +13,7 @@ RUN apt-get update \
 ADD Gemfile /app/
 ADD Gemfile.lock /app/
 WORKDIR /app
-RUN bundle install
+RUN BUNDLE_FROZEN=true bundle install
 
 ADD . /app
 RUN RAILS_ENV=production bundle exec rake assets:precompile
