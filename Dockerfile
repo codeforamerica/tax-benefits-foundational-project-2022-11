@@ -16,13 +16,7 @@ WORKDIR /app
 RUN bundle install
 
 ADD . /app
-
-# Collect assets. This approach is not fully production-ready, but
-# will help you experiment with Aptible before bothering with assets.
-# Review http://go.aptible.com/assets for production-ready advice.
-RUN set -a \
- && . ./.aptible.env \
- && bundle exec rake assets:precompile
+RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 EXPOSE 3000
 
