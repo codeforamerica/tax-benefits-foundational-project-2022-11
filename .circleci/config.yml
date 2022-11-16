@@ -56,11 +56,6 @@ commands:
       - save_cache:
           key: bundle-{{ checksum "Gemfile.lock" }}
           paths: [/mnt/ramdisk/vendor/bundle]
-  setup_test_db_for_parallel:
-    description: "Setup test database"
-    steps:
-      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run: bundle exec rake db:create db:schema:load
   setup_test_db:
     description: "Setup test database"
     steps:
@@ -83,7 +78,7 @@ jobs:
       - checkout
       - install_system_dependencies
       - install_ruby_dependencies
-      - setup_test_db_for_parallel
+      - setup_test_db
       - run: bundle exec rspec
       - store_test_results:
           path: tmp/rspec-test-results
