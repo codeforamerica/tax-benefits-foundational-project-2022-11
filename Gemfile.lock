@@ -269,6 +269,7 @@ DEPENDENCIES
   capybara
   cfa-styleguide!
   debug
+  execjs
   importmap-rails
   jbuilder
   pg (~> 1.1)
