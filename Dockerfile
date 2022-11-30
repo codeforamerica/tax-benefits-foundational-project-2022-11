@@ -2,7 +2,7 @@ FROM ruby:3.1.2
 
 # System prerequisites
 RUN apt-get update \
- && apt-get -y install build-essential libpq-dev nodejs \
+ && apt-get -y install build-essential libgnutls30 libpq-dev nodejs \
  && rm -rf /var/lib/apt/lists/*
 
 # If you require additional OS dependencies, install them here:
