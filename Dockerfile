@@ -10,15 +10,14 @@ RUN apt-get update \
 #  && apt-get -y install imagemagick nodejs \
 #  && rm -rf /var/lib/apt/lists/*
 
-ADD Gemfile /app/
-ADD Gemfile.lock /app/
+ADD Gemfile* /app/
 WORKDIR /app
 RUN BUNDLE_FROZEN=true bundle install
 
 ADD . /app
 RUN set -a && \
-    . .aptible.env && \
-    bundle exec rake assets:precompile
+    . /app/.aptible.env && \
+    RAILS_ENV=production bundle exec rake assets:precompile
 
 EXPOSE 3000
 
