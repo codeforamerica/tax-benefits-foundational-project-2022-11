@@ -17,7 +17,6 @@ RUN BUNDLE_FROZEN=true bundle install
 ADD . /app
 RUN set -a && \
     . /app/.aptible.env && \
-    cat /app/.aptible.env && \
     RAILS_ENV=production bundle exec rake assets:precompile
 
 EXPOSE 3000
