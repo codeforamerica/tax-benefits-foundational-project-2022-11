@@ -3,12 +3,31 @@ require 'rails_helper'
 RSpec.describe BenefitApp, type: :model do
   context "validation of fields" do
     subject(:benefit_app_valid) { create :benefit_app }
-    subject(:benefit_app_without_email) { expect { create :benefit_app_without_email } }
-    subject(:benefit_app_without_phone_number) { expect { create :benefit_app_without_phone_number } }
-    subject(:benefit_app_without_address) { expect { create :benefit_app_without_address } }
+    subject(:benefit_app_without_email) { build :benefit_app_without_email  }
+    subject(:benefit_app_without_phone_number) { build :benefit_app_without_phone_number }
+    subject(:benefit_app_without_address) { build :benefit_app_without_address }
 
-    it { benefit_app_without_email.to raise_error(/Email/) }
-    it { benefit_app_without_phone_number.to raise_error(/Phone number/) }
-    it { benefit_app_without_address.to raise_error(/Address/) }
+    it "expects a email address to be present" do
+       expect(benefit_app_without_email).not_to be_valid
+    end
+
+    it "expects a valid email address" do
+      benefit_app = build :benefit_app, email_address: "@foo.com"
+      expect(benefit_app).not_to be_valid
+
+      benefit_app.email_address = "!!!@com.com"
+      expect(benefit_app).not_to be_valid
+
+      benefit_app.email_address = "amanda89@codeforamerica.org"
+      expect(benefit_app).to be_valid
+    end
+
+    it "expects a phone number to be present" do
+     expect(benefit_app_without_phone_number).not_to be_valid
+    end
+
+    it "expects an address to be present" do
+      expect(benefit_app_without_address).to.not be_valid
+    end
   end
 end
