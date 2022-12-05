@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :benefit_app, class: BenefitApp do
     email_address { "test@codeforamerica.org" }
-    address { "1000 Main Way, Left Of, A Country" }
+    address { "1000 Main Way, Left Of, A Country 10001" }
     phone_number { "8003934448" }
 
     factory :benefit_app_without_email do
