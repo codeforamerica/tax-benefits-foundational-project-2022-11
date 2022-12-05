@@ -34,4 +34,20 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     # Show the validation errors on the page
     # Redirect to list of apps and look for new app on page
   end
+
+  describe "#create" do
+
+    let(:params) { {benefit_app: {email_address: "Gary@Guava.com", phone_number: "94110", address: "1322 wallaby way"}} }
+    let(:bad_params) { {benefit_app: {email_address: "invalid@", phone_number: "94110", address: "1322 wallaby way"}} }
+
+    it "heads back to app listing on successful creation" do
+      post :create, params: params
+      expect(response).to redirect_to root_path
+    end
+
+    it "shows validation errors on failure to create app" do
+      post :create, params: bad_params
+      expect(response).not_to redirect_to root_path
+    end
+  end
 end

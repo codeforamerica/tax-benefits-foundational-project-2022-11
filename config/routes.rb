@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get 'new_benefits_app' => 'benefits_applications#new'
+  post 'create' => 'benefits_applications#create'
   # get 'benefits_applications/new', as: :new_benefit_app
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

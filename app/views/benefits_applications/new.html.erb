@@ -1,9 +1,20 @@
-<form method="POST" class="form-card">
-  <h2>How can we contact you?</h2>
-  <%= fields_for(:form, @form, builder: Cfa::Styleguide::CfaV2FormBuilder) do |f| %>
+<%= form_with model: @form, url: {action: :create}, method: :post, local: true, builder: Cfa::Styleguide::CfaV2FormBuilder, class: "form-card" do |f| %>
+  <h2>Howw can we contact you?</h2>
     <%= f.cfa_text_field(:address, "What's your address?", class: 'form-width--med form-group') %>
-    <%= f.cfa_text_field(:address, "What's your phone number?", class: 'form-width--med form-group') %>
-    <%= f.cfa_text_field(:address, "What's your email address?", class: 'form-width--med form-group') %>
+    <%= f.cfa_text_field(:phone_number, "What's your phone number?", class: 'form-width--med form-group') %>
+    <%= f.cfa_text_field(:email_address, "What's your email address?", class: 'form-width--med form-group') %>
     <%= f.cfa_button('Continue →', type: :submit, wrapper_options: { class: 'form-group' }) %>
-  <% end %>
-</form>
+  <% end  %>
+
+<% if @form.errors.any? %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      The form contains <%= pluralize(@form.errors.count, "error") %>.
+    </div>
+    <ul>
+      <% @form.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
