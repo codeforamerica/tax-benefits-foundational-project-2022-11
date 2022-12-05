@@ -27,7 +27,7 @@ RSpec.describe BenefitApp, type: :model do
     end
 
     it "expects an address to be present" do
-      expect(benefit_app_without_address).to.not be_valid
+      expect(benefit_app_without_address).not_to be_valid
     end
   end
 end
