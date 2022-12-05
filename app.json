@@ -2,6 +2,9 @@
   "name": "Tax Benefits App",
   "description": "Heroku review apps from GitHub PRs",
   "stack": "heroku-20",
+  "scripts": {
+    "prerelease": "bin/rails db:migrate RAILS_ENV=${RAILS_ENV}"
+  },
   "env": {
     "LOG_LEVEL": {
       "value": "info"
