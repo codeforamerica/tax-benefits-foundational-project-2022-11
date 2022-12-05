@@ -1,2 +1,9 @@
-<h1>BenefitsApplications#new</h1>
-<p>Find me in app/views/benefits_applications/new.html.erb</p>
+<form method="POST" class="form-card">
+  <h2>How can we contact you?</h2>
+  <%= fields_for(:form, @form, builder: Cfa::Styleguide::CfaV2FormBuilder) do |f| %>
+    <%= f.cfa_text_field(:address, "What's your address?", class: 'form-width--med form-group') %>
+    <%= f.cfa_text_field(:address, "What's your phone number?", class: 'form-width--med form-group') %>
+    <%= f.cfa_text_field(:address, "What's your email address?", class: 'form-width--med form-group') %>
+    <%= f.cfa_button('Continue →', type: :submit, wrapper_options: { class: 'form-group' }) %>
+  <% end %>
+</form>

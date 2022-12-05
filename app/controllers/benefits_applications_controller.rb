@@ -4,5 +4,6 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def new
+    @form = BenefitApp.new
   end
 end
