@@ -32,5 +32,6 @@
 
 # Ignore RubyMine config
 .idea
+
 config/credentials/*.key
 .aptible.env

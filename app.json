@@ -1,0 +1,26 @@
+{
+  "name": "Tax Benefits App",
+  "description": "Heroku review apps from GitHub PRs",
+  "stack": "heroku-20",
+  "env": {
+    "LOG_LEVEL": {
+      "value": "info"
+    },
+    "RACK_ENV": {
+      "value": "development"
+    },
+    "RAILS_ENV": {
+      "value": "development"
+    },
+    "RAILS_SERVE_STATIC_FILES": {
+      "value": "enabled"
+    },
+    "SECRET_KEY_BASE": {
+      "description": "Secret key base for Rails.",
+      "generator": "secret"
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ]
+}
