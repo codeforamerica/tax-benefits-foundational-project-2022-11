@@ -78,5 +78,9 @@ group :test do
 end
 
 group :development, :test do
+  # Test harness
   gem 'rspec-rails', '~> 6.0.0'
+
+  # Factory generator
+  gem 'factory_bot_rails'
 end
