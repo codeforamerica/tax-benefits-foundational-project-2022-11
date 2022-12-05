@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe BenefitsApplicationsController, type: :controller do
-  context "when viewing list of apps" do
+  describe "#index" do
     let!(:first_app)  { create :benefit_app, email_address: "app+1@codeforamerica.org" }
     let!(:second_app) { create :benefit_app, email_address: "app+2@codeforamerica.org" }
 
@@ -17,10 +17,18 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response.body).to include second_app.email_address
     end
 
-    # Shows a link to the new application page and confirming page is rendered
+    it "shows a link to the new application page and confirming page is rendered" do
+      get :index
+
+      expect(response.body).to include new_benefits_app_path
+    end
   end
 
-  context "when creating an app" do
+  describe "#new" do
+    it "provides a form to create a new benefit app" do
+      get :new
+      expect(response).to have_http_status(:ok)
+    end
     # Show the validation errors on the page
     # Redirect to list of apps and look for new app on page
   end
