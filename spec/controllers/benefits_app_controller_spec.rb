@@ -42,6 +42,8 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     it "heads back to app listing on successful creation" do
       post :create, params: params
       expect(response).to redirect_to root_path
+      expect(BenefitApp.all.length).to eq 1
+      expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
 
     it "shows validation errors on failure to create app" do
