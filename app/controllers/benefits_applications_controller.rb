@@ -6,28 +6,46 @@ class BenefitsApplicationsController < ApplicationController
   def new
     puts 'we are in the new controller action'
     @form = BenefitApp.new
-    @form_object_id = @form.object_id
+  end
+
+  def new_primary_member
+    @form = current_benefit_app&.build_primary_member
   end
 
   def create
-
-    puts benefits_permitted_params
     @form = BenefitApp.new(benefits_permitted_params)
-    @form_object_id = @form.object_id
-    puts "object id=#{ @form.object_id}"
     if @form.valid?
       @form.save
+      session[:benefit_app_id] = @form.id
+      redirect_to add_primary_member_path
+    else
+      render :new
+    end
+  end
+
+  def create_primary_member
+    @form = current_benefit_app.build_primary_member(primary_member_permitted_params)
+    if @form.valid?
+      @form.save
+      session[:benefit_app_id] = @form.id
       redirect_to root_path
     else
-      puts @form.errors.present?
-      puts @form.errors.messages
-      render :new
+      render :new_primary_member
     end
   end
 
   private
 
+  def primary_member_permitted_params
+    params.require(:member).permit(:first_name, :last_name, :date_of_birth)
+  end
+
   def benefits_permitted_params
     params.require(:benefit_app).permit(:email_address, :address, :phone_number)
+  end
+
+  def current_benefit_app
+    benefit_app_id = session[:benefit_app_id]
+    BenefitApp.find(benefit_app_id) unless benefit_app_id.nil?
   end
 end

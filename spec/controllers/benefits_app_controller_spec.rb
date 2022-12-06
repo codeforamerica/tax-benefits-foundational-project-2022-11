@@ -30,12 +30,20 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include "What's your address?"
     end
+  end
 
-    # Redirect to list of apps and look for new app on page
+  describe "#new_primary_member" do
+    let(:benefit_app) { create(:benefit_app, primary_member: nil) }
+
+    it "provides a form to create a new primary member" do
+      get :new_primary_member, session: {benefit_app_id: benefit_app.id}
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include "What's your first name?"
+    end
   end
 
   describe "#create" do
-
     let(:params) { {benefit_app: {email_address: "Gary@Guava.com", phone_number: "94110", address: "1322 wallaby way"}} }
     let(:bad_params) { {benefit_app: {email_address: "invalid@", phone_number: "94110", address: "1322 wallaby way"}} }
 
@@ -48,7 +56,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
-      expect(response).not_to redirect_to root_path
+      expect(response).not_to redirect_to add_primary_member_path
       expect(response.body).to include "is invalid"
     end
   end
