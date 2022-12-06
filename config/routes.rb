@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
-  get 'benefits_applications/index'
-  get 'benefits_applications/new'
+  get 'new_benefits_app' => 'benefits_applications#new'
+  post 'create' => 'benefits_applications#create'
+  # get 'benefits_applications/new', as: :new_benefit_app
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  root "homepage#index"
+  root "benefits_applications#index"
 end
