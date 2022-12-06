@@ -5,6 +5,7 @@ class BenefitApp < ApplicationRecord
   validates :email_address, presence: true,
             format: { with: VALID_EMAIL_REGEX }
   validates :phone_number, presence: true
+  validates :submitted_at, presence: false
 
   has_one :primary_member, class_name: 'Member'
 end

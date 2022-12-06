@@ -17,17 +17,23 @@ class BenefitsApplicationsController < ApplicationController
     if @form.valid?
       @form.save
       session[:benefit_app_id] = @form.id
-      redirect_to add_primary_member_path
+      redirect_to new_primary_member_path
     else
       render :new
     end
   end
 
   def create_primary_member
-    @form = current_benefit_app.build_primary_member(primary_member_permitted_params)
+    benefit_app = current_benefit_app
+    @form = benefit_app.build_primary_member(primary_member_permitted_params)
     if @form.valid?
       @form.save
-      session[:benefit_app_id] = @form.id
+      puts Date.today.class
+      puts "before on #{benefit_app.updated_at.rfc3339(9)} (#{benefit_app.submitted_at}) for id ##{session[:benefit_app_id]} #{benefit_app.to_param}"
+      sleep 3
+      benefit_app.update(submitted_at: Date.today, updated_at: DateTime.now)
+      puts benefit_app.valid?
+      puts "after  on #{benefit_app.updated_at.rfc3339(9)} (#{benefit_app.submitted_at}),  for id ##{session[:benefit_app_id]} #{benefit_app.to_s}"
       redirect_to root_path
     else
       render :new_primary_member

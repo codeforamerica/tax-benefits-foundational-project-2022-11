@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'new' => 'benefits_applications#new'
+  get 'new' => 'benefits_applications#new', as: :new_benefit_app
   post 'create' => 'benefits_applications#create'
 
   get 'new_primary_member' => 'benefits_applications#new_primary_member'
