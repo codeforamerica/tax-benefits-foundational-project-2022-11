@@ -5,5 +5,5 @@ class BenefitApp < ApplicationRecord
             format: { with: VALID_EMAIL_REGEX }
   validates :phone_number, presence: true
 
-  has_one :primary_member, class_name: 'Member', foreign_key: 'primary_member_id'
+  has_one :primary_member, class_name: 'Member'
 end

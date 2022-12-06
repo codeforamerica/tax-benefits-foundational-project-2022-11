@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_06_201947) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_06_203011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_201947) do
     t.string "email_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "primary_member_id"
+    t.index ["primary_member_id"], name: "index_benefit_apps_on_primary_member_id"
   end
 
   create_table "members", force: :cascade do |t|
@@ -32,5 +34,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_201947) do
     t.index ["benefit_app_id"], name: "index_members_on_benefit_app_id"
   end
 
+  add_foreign_key "benefit_apps", "members", column: "primary_member_id"
   add_foreign_key "members", "benefit_apps"
 end
