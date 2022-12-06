@@ -31,7 +31,6 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response.body).to include "What's your address?"
     end
 
-    # Show the validation errors on the page
     # Redirect to list of apps and look for new app on page
   end
 
@@ -48,6 +47,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
       expect(response).not_to redirect_to root_path
+      expect(response.body).to include "is invalid"
     end
   end
 end
