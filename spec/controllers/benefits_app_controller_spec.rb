@@ -48,8 +48,8 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
   end
 
   describe "#create" do
-    let(:params) { {benefit_app: {email_address: "Gary@Guava.com", phone_number: "94110", address: "1322 wallaby way"}} }
-    let(:bad_params) { {benefit_app: {email_address: "invalid@", phone_number: "94110", address: "1322 wallaby way"}} }
+    let(:params) { {benefit_app: {email_address: "Gary@Guava.com", phone_number: "8001002210", address: "1322 wallaby way"}} }
+    let(:bad_params) { {benefit_app: {email_address: "invalid@", phone_number: "8001002211", address: "1322 wallaby way"}} }
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
