@@ -4,7 +4,6 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def new
-    puts 'we are in the new controller action'
     @form = BenefitApp.new
   end
 
@@ -28,12 +27,7 @@ class BenefitsApplicationsController < ApplicationController
     @form = benefit_app.build_primary_member(primary_member_permitted_params)
     if @form.valid?
       @form.save
-      puts Date.today.class
-      puts "before on #{benefit_app.updated_at.rfc3339(9)} (#{benefit_app.submitted_at}) for id ##{session[:benefit_app_id]} #{benefit_app.to_param}"
-      sleep 3
-      benefit_app.update(submitted_at: Date.today, updated_at: DateTime.now)
-      puts benefit_app.valid?
-      puts "after  on #{benefit_app.updated_at.rfc3339(9)} (#{benefit_app.submitted_at}),  for id ##{session[:benefit_app_id]} #{benefit_app.to_s}"
+      benefit_app.update(submitted_at: Date.today)
       redirect_to root_path
     else
       render :new_primary_member

@@ -13,8 +13,8 @@
       <% @apps.each do |benefit_app| %>
         <tr>
           <td><%= benefit_app.id %></td>
-          <td><%= benefit_app.created_at %></td>
-          <td><%= benefit_app.email_address %></td>
+          <td><%= benefit_app.submitted_at or 'Not Submitted' %></td>
+          <td><%= benefit_app.primary_member_name %></td>
         </tr>
       <% end %>
       </tbody>

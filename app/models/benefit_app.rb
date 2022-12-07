@@ -8,4 +8,12 @@ class BenefitApp < ApplicationRecord
   validates :submitted_at, presence: false
 
   has_one :primary_member, class_name: 'Member'
+
+  def primary_member_name
+    if primary_member.present?
+      "#{primary_member.first_name} #{primary_member.last_name}"
+    else
+      "No Primary Member"
+    end
+  end
 end

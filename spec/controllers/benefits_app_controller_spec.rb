@@ -4,23 +4,27 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
   render_views
 
   describe "#index" do
-    let!(:first_app)  { create :benefit_app, email_address: "app+1@codeforamerica.org" }
-    let!(:second_app) { create :benefit_app, email_address: "app+2@codeforamerica.org" }
+    let!(:first_app)  { create :benefit_app, email_address: "app+1@codeforamerica.org", primary_member: build(:member) }
+    let!(:second_app) { create :benefit_app, email_address: "app+2@codeforamerica.org", primary_member: build(:member) }
 
     it "shows a list of apps" do
       get :index
 
-      # TODO: Check for app ID, applicant number and date submitted once
-      #       those fields are available.
-
-      expect(response.body).to include first_app.email_address
-      expect(response.body).to include second_app.email_address
+      expect(response.body).to include first_app.primary_member.first_name
+      expect(response.body).to include second_app.primary_member.last_name
     end
 
     it "shows a link to the new application page and confirming page is rendered" do
       get :index
 
       expect(response.body).to include new_benefit_app_path
+    end
+
+    it "shows no name for benefit apps with no primary member" do
+      incomplete_app = create(:benefit_app, primary_member: nil)
+      get :index
+      expect(response.body).to include "Not Submitted"
+      expect(response.body).to include "No Primary Member"
     end
   end
 
