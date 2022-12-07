@@ -17,6 +17,8 @@ RSpec.describe BenefitApp, type: :model do
 
       benefit_app.email_address = "!!!@com.com"
       expect(benefit_app).not_to be_valid
+      expect(benefit_app.save).to be_falsy
+      expect(benefit_app.errors.messages[:email_address]).to include("Please enter a valid email address")
 
       benefit_app.email_address = "amanda89@codeforamerica.org"
       expect(benefit_app).to be_valid
