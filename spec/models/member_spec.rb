@@ -16,6 +16,9 @@ RSpec.describe Member, type: :model do
     it { expect(invalid_member_with_no_app).not_to be_valid }
     it { expect(invalid_member_with_no_first_name).not_to be_valid }
     it { expect(invalid_member_with_no_last_name).not_to be_valid }
+    it "gets the custom error message associated with invalid birth format" do
+      puts invalid_member_with_no_date_of_birth.errors.messages
+    end
     it { expect(invalid_member_with_no_date_of_birth).not_to be_valid }
     it { expect(invalid_member_with_invalid_birthdate_format).not_to be_valid }
   end
