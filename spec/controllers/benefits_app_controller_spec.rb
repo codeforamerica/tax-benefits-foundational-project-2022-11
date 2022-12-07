@@ -61,7 +61,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
       expect(response).not_to redirect_to new_primary_member_path
-      expect(response.body).to include "is invalid"
+      expect(response.body).to include "Please enter a valid email address"
     end
   end
 
