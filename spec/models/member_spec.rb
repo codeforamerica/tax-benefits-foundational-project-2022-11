@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Member, type: :model do
   context "creating member association to benefits app" do
-    subject(:valid_member) { create :member }
-    subject(:invalid_member_with_no_app) { build :member_without_app }
+    subject(:valid_member) { create :member, benefit_app: create(:benefit_app) }
+    subject(:invalid_member_with_no_app) { build :member }
     subject(:invalid_member_with_no_first_name) { build :member_with_no_first_name }
     subject(:invalid_member_with_no_last_name) { build :member_with_no_last_name }
     subject(:invalid_member_with_no_date_of_birth) { build :member_with_no_date_of_birth }

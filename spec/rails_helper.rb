@@ -58,6 +58,7 @@ RSpec.configure do |config|
 
   # Add factory support.
   config.include FactoryBot::Syntax::Methods
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
