@@ -6,6 +6,7 @@ class Member < ApplicationRecord
   validates :last_name, presence: { message: "This field is required" }
   validates :first_name, presence: { message: "This field is required" }
   validate :validate_birth_date_format
+  validates :is_primary, inclusion: { in: [ true, false ] }
 
   def validate_birth_date_format
     if (not VALID_DATE_REGEX_1.match?(date_of_birth.to_s)) && (not VALID_DATE_REGEX_2.match?(date_of_birth.to_s))

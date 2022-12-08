@@ -4,8 +4,8 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
   render_views
 
   describe "#index" do
-    let!(:first_app)  { create :benefit_app, email_address: "app+1@codeforamerica.org", primary_member: build(:member) }
-    let!(:second_app) { create :benefit_app, email_address: "app+2@codeforamerica.org", primary_member: build(:member) }
+    let!(:first_app)  { create :benefit_app, email_address: "app+1@codeforamerica.org", primary_member: build(:primary_member) }
+    let!(:second_app) { create :benefit_app, email_address: "app+2@codeforamerica.org", primary_member: build(:primary_member) }
 
     it "shows a list of apps" do
       get :index
