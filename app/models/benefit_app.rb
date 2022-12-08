@@ -8,6 +8,7 @@ class BenefitApp < ApplicationRecord
   validates :submitted_at, presence: false
 
   has_one :primary_member, -> { where(is_primary: true) }, class_name: 'Member'
+  has_many :secondary_members, -> { where(is_primary: false) }, class_name: 'Member'
 
   def primary_member_name
     if primary_member.present?

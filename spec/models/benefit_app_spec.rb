@@ -38,12 +38,46 @@ RSpec.describe BenefitApp, type: :model do
       expect(benefit_app_without_address).not_to be_valid
     end
 
-    it "expects its primary member to be marked as one" do
-      expect(benefit_app_with_primary_member.primary_member.is_primary).to be_truthy
-    end
+    context "with associating members" do
+      it "expects its primary member to be marked as one" do
+        expect(benefit_app_with_primary_member.primary_member.is_primary).to be_truthy
+      end
 
-    it "does not assign a non-primary member as primary" do
-      expect(benefit_app_with_non_primary_member.primary_member_id).to be_nil
+      it "does not assign a non-primary member as primary" do
+        expect(benefit_app_with_non_primary_member.primary_member_id).to be_nil
+      end
+
+      it "fails to associate a primary member as a secondary member" do
+        benefit_app = create(:benefit_app)
+        expect(benefit_app).to be_valid
+
+        primary_member_params = attributes_for(:primary_member)
+        alleged_secondary_member = benefit_app.secondary_members.build(primary_member_params)
+
+        benefit_app.reload
+        benefit_app.secondary_members.reload
+
+        expect(benefit_app.secondary_members.count).to eql(0)
+        expect(benefit_app.primary_member_id).to eql(alleged_secondary_member.id)
+      end
+
+      it "fails to associate a duplicate primary member" do
+        benefit_app = create(:benefit_app)
+        expect(benefit_app).to be_valid
+
+        primary_member = benefit_app.create_primary_member(attributes_for(:primary_member))
+        expect(primary_member).to be_valid
+
+        expect {
+          benefit_app.build_primary_member(attributes_for(:primary_member))
+        }.to raise_error(ActiveRecord::RecordNotSaved, /existing associated primary_member/)
+
+        benefit_app.primary_member.destroy
+
+        expect {
+          benefit_app.create_primary_member(attributes_for(:primary_member))
+        }.not_to raise_error
+      end
     end
   end
 end

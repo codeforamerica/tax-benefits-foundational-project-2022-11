@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :member do
     first_name { "MyString" }
     last_name { "MyString" }
-    date_of_birth { 29.years.ago }
+    date_of_birth { 29.years.ago.strftime("%m/%d/%Y") }
     is_primary { false }
     benefit_app { build(:benefit_app) }
 

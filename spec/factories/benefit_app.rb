@@ -4,6 +4,7 @@ FactoryBot.define do
     address { "1000 Main Way, Left Of, A Country 10001" }
     phone_number { "8003934448" }
     primary_member { nil }
+    secondary_members { [] }
 
     factory :benefit_app_without_email do
       email_address { "" }
