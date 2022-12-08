@@ -17,6 +17,10 @@ FactoryBot.define do
       phone_number { "" }
     end
 
+    factory :benefit_app_with_invalid_phone_number do
+      phone_number { "3010000" }
+    end
+
     factory :benefit_app_with_primary_member do
       primary_member { create(:member) }
     end
