@@ -2,8 +2,9 @@ FactoryBot.define do
   factory :member do
     first_name { "MyString" }
     last_name { "MyString" }
-    date_of_birth { 15.years.ago.to_date }
-    benefit_app { nil }
+    date_of_birth { 29.years.ago.strftime("%m/%d/%Y") }
+    is_primary { false }
+    benefit_app { build(:benefit_app) }
 
     factory :member_with_no_first_name do
       first_name { nil }
@@ -19,6 +20,14 @@ FactoryBot.define do
 
     factory :invalid_member_with_invalid_birthdate_format do
       date_of_birth {"284849-1-2"}
+    end
+
+    factory :primary_member do
+      is_primary { true }
+    end
+
+    factory :secondary_member do
+      is_primary { false }
     end
   end
 end
