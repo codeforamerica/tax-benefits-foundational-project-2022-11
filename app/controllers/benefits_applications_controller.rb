@@ -40,10 +40,17 @@ class BenefitsApplicationsController < ApplicationController
     if @form.valid?
       @form.save
       benefit_app.update(submitted_at: Date.today) unless had_primary_member
-      redirect_to root_path
+      redirect_to new_member_path
     else
       render :new_member
     end
+  end
+
+  def validate_application
+    benefit_app = current_benefit_app
+    # FIXME: Throw error if there's no primary member associated.
+    # FIXME: MAYBE move 'submitted_at' updating here?
+    # FIXME: Redirect to 'root_url'
   end
 
   private
