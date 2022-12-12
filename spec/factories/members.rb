@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :member do
-    first_name { "MyString" }
-    last_name { "MyString" }
+    sequence(:first_name) { |n| "MemberNumber#{n}" }
+    sequence(:last_name) { |n| "LastNameOfMemberNumber#{n}" }
     date_of_birth { 29.years.ago.strftime("%m/%d/%Y") }
     is_primary { false }
     benefit_app { build(:benefit_app) }
@@ -23,10 +23,14 @@ FactoryBot.define do
     end
 
     factory :primary_member do
+      sequence(:first_name) { |n| "PrimaryMemberNumber#{n}" }
+      sequence(:last_name) { |n| "LastNameOfPrimaryMemberNumber#{n}" }
       is_primary { true }
     end
 
     factory :secondary_member do
+      sequence(:first_name) { |n| "SecondaryMemberNumber#{n}" }
+      sequence(:last_name) { |n| "LastNameOfSecondaryMemberNumber#{n}" }
       is_primary { false }
     end
   end
