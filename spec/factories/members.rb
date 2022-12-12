@@ -25,5 +25,9 @@ FactoryBot.define do
     factory :primary_member do
       is_primary { true }
     end
+
+    factory :secondary_member do
+      is_primary { false }
+    end
   end
 end

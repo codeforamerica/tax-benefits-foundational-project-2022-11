@@ -43,6 +43,24 @@ RSpec.describe BenefitApp, type: :model do
         expect(benefit_app_with_primary_member.primary_member.is_primary).to be_truthy
       end
 
+      it "expects its secondary members to be marked as one" do
+        benefit_app = create(:benefit_app)
+
+        secondary_members_params = attributes_for_list(:secondary_member, 3)
+        alleged_secondary_members = secondary_members_params.map { |params| benefit_app.secondary_members.build(params)}
+
+        expect(benefit_app).to be_valid
+        benefit_app.save
+        
+        alleged_secondary_member_ids = alleged_secondary_members.map { |member| member.id }
+
+        benefit_app.reload
+        benefit_app.secondary_members.reload
+
+        expect(benefit_app.secondary_members.count).to eql(secondary_members_params.count)
+        expect(benefit_app.secondary_member_ids).to eql(alleged_secondary_member_ids)
+      end
+
       it "does not assign a non-primary member as primary" do
         expect(benefit_app_with_non_primary_member.primary_member_id).to be_nil
       end
