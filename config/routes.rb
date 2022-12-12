@@ -4,7 +4,6 @@ Rails.application.routes.draw do
 
   get 'new_member' => 'benefits_applications#new_member'
   post 'create_member' => 'benefits_applications#create_member'
-  get 'validate_application' => 'benefits_applications#validate_application'
 
   # get 'benefits_applications/new', as: :new_benefit_app
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
