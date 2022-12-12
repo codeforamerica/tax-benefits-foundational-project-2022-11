@@ -85,9 +85,9 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
         benefit_app.reload
 
         expect(response).to redirect_to new_member_path
-
-        # get :new_member, session: {benefit_app_id: benefit_app.id}
-        # expect(response.body).to include("#{member_param[:first_name]} #{member_param[:last_name]}")
+        expect(benefit_app.primary_member).not_to be_nil
+        expect(benefit_app.submitted_at).not_to be_nil
+        expect(benefit_app.submitted_at).to eq Date.today
       end
     end
 
@@ -98,8 +98,8 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
         expect(response).to redirect_to new_member_path
 
-        get :new_member, session: {benefit_app_id: benefit_app.id}
-        expect(response.body).to include("#{member_param[:first_name]} #{member_param[:last_name]}")
+        # get :new_member, session: {benefit_app_id: benefit_app.id}
+        # expect(response.body).to include("#{member_param[:first_name]} #{member_param[:last_name]}")
       end
     end
   end
