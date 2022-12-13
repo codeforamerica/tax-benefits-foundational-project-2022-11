@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :member do
     sequence(:first_name) { |n| "MemberNumber#{n}" }
     sequence(:last_name) { |n| "LastNameOfMemberNumber#{n}" }
-    date_of_birth { 29.years.ago.strftime("%m/%d/%Y") }
+    date_of_birth { 29.years.ago }
     is_primary { false }
     benefit_app { build(:benefit_app) }
 
