@@ -8,12 +8,15 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def new_member
-    # TODO: make an instance variable which exposes primary vs. secondary so that we can adapt the view
     benefit_app = current_benefit_app
-    if benefit_app.primary_member.present?
+    @is_primary = benefit_app.primary_member.present?
+    @members = current_members(benefit_app)
+    if @is_primary
       @form = benefit_app&.secondary_members.build
+      render :new_secondary_member
     else
       @form = benefit_app&.build_primary_member
+      render :new_member
     end
   end
 
@@ -30,6 +33,7 @@ class BenefitsApplicationsController < ApplicationController
 
   def create_member
     benefit_app = current_benefit_app
+    @members = current_members(benefit_app)
     had_primary_member = benefit_app&.primary_member.present?
 
     if had_primary_member
@@ -43,7 +47,7 @@ class BenefitsApplicationsController < ApplicationController
       benefit_app.update(submitted_at: Date.today) unless had_primary_member
       redirect_to new_member_path
     else
-      render :new_member
+      render :new_secondary_member
     end
   end
 
@@ -52,6 +56,8 @@ class BenefitsApplicationsController < ApplicationController
     if benefit_app&.primary_member.present?
       redirect_to root_url
     else
+      @members = current_members(benefit_app)
+      @form = benefit_app.build_primary_member
       render :new_member
     end
   end
@@ -72,7 +78,6 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def current_members(benefit_app)
-    benefit_app.reload
     members = benefit_app.secondary_members.to_a
     members = [benefit_app.primary_member] + members if benefit_app.primary_member.present?
     members
