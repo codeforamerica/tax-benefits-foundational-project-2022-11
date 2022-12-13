@@ -51,7 +51,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       get :new_member, session: {benefit_app_id: benefit_app_with_primary.id}
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include "What's your dependents first name?"
+      expect(response.body).to include "What's your secondary member's first name?"
       expect(response.body).to include benefit_app_with_primary.primary_member.full_name
     end
   end
