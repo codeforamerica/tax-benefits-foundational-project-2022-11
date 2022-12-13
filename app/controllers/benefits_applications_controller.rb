@@ -4,7 +4,17 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def new
-    @form = BenefitApp.new
+    @benefit_app_form = BenefitApp.new
+  end
+
+  def create
+    @benefit_app_form = BenefitApp.new(benefits_permitted_params)
+    if @benefit_app_form.save
+      session[:benefit_app_id] = @benefit_app_form.id
+      redirect_to new_member_path
+    else
+      render :new
+    end
   end
 
   def new_member
@@ -12,57 +22,63 @@ class BenefitsApplicationsController < ApplicationController
     @is_primary = benefit_app.primary_member.present?
     @members = current_members(benefit_app)
     if @is_primary
-      @form = benefit_app&.secondary_members.build
+      @secondary_member_form = benefit_app&.secondary_members.build
       render :new_secondary_member
     else
-      @form = benefit_app&.build_primary_member
+      @primary_member_form = benefit_app&.build_primary_member
       render :new_member
-    end
-  end
-
-  def create
-    @form = BenefitApp.new(benefits_permitted_params)
-    if @form.valid?
-      @form.save
-      session[:benefit_app_id] = @form.id
-      redirect_to new_member_path
-    else
-      render :new
     end
   end
 
   def create_member
     benefit_app = current_benefit_app
     @members = current_members(benefit_app)
-    had_primary_member = benefit_app&.primary_member.present?
+    built_member = build_member(benefit_app)
 
-    if had_primary_member
-      @form = benefit_app.secondary_members.build(member_permitted_params)
+    if benefit_app&.primary_member.present?
+      @secondary_member_form = built_member
+      attempt_to_persist_and_route_member(benefit_app, @secondary_member_form)
     else
-      @form = benefit_app.build_primary_member(member_permitted_params)
-    end
-
-    if @form.valid?
-      @form.save
-      benefit_app.update(submitted_at: Date.today) unless had_primary_member
-      redirect_to new_member_path
-    else
-      render :new_secondary_member
+      @primary_member_form = built_member
+      attempt_to_persist_and_route_member(benefit_app, @primary_member_form)
     end
   end
 
   def validate_application
     benefit_app = current_benefit_app
+
     if benefit_app&.primary_member.present?
+      benefit_app.update(submitted_at: Date.today)
       redirect_to root_url
     else
       @members = current_members(benefit_app)
-      @form = benefit_app.build_primary_member
+      @primary_member_form = benefit_app.build_primary_member
       render :new_member
     end
   end
 
   private
+
+  def build_member(benefit_app)
+    had_primary_member = benefit_app&.primary_member.present?
+
+    if had_primary_member
+      benefit_app.secondary_members.build(member_permitted_params)
+    else
+      benefit_app.build_primary_member(member_permitted_params)
+    end
+  end
+
+  def attempt_to_persist_and_route_member(benefit_app, member_form)
+    had_primary_member = benefit_app&.primary_member.present?
+
+    if member_form.save && benefit_app.save
+      redirect_to new_member_path
+    else
+      render :new_secondary_member if had_primary_member
+      render :new_member unless had_primary_member
+    end
+  end
 
   def member_permitted_params
     params.require(:member).permit(:first_name, :last_name, :date_of_birth, :is_primary)
@@ -78,6 +94,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def current_members(benefit_app)
+    benefit_app.reload
     members = benefit_app.secondary_members.to_a
     members = [benefit_app.primary_member] + members if benefit_app.primary_member.present?
     members

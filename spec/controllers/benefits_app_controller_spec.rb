@@ -80,15 +80,12 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     let(:secondary_members_params) { attributes_for_list(:secondary_member, 3) }
 
     it "creates a new primary member with the provided fields" do
-      freeze_time do
-        post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
-        benefit_app.reload
+      post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
+      benefit_app.reload
 
-        expect(response).to redirect_to new_member_path
-        expect(benefit_app.primary_member).not_to be_nil
-        expect(benefit_app.submitted_at).not_to be_nil
-        expect(benefit_app.submitted_at).to eq Date.today
-      end
+      expect(response).to redirect_to new_member_path
+      expect(benefit_app.primary_member).not_to be_nil
+      expect(benefit_app.submitted_at).to be_nil
     end
 
     it "creates a new secondary member with the provided fields" do
@@ -110,8 +107,13 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
 
     it "redirects to root url with a valid benefit app" do
-      post :validate_application, session: { benefit_app_id: valid_app.id }
-      expect(response).to redirect_to root_path
+      freeze_time do
+        post :validate_application, session: { benefit_app_id: valid_app.id }
+        expect(response).to redirect_to root_path
+        valid_app.reload
+        expect(valid_app.submitted_at).not_to be_nil
+        expect(valid_app.submitted_at).to eq Date.today
+      end
     end
 
     # TODO: fix this test by making the action compatible with the custom form builder
