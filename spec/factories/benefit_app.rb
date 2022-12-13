@@ -23,7 +23,7 @@ FactoryBot.define do
     end
 
     factory :benefit_app_with_primary_member do
-      primary_member { create(:member) }
+      primary_member { create(:primary_member) }
     end
 
     factory :benefit_app_with_non_primary_member do
