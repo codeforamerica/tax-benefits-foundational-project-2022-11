@@ -8,6 +8,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def new_member
+    # TODO: make an instance variable which exposes primary vs. secondary so that we can adapt the view
     benefit_app = current_benefit_app
     if benefit_app.primary_member.present?
       @form = benefit_app&.secondary_members.build

@@ -1,10 +1,6 @@
 <%= form_with model: @form, url: { action: :create_member }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
-  <%#= @form.is_primary? %>
-  <%# if @benefit_app.primary_member.present? %>
-<!--    <h2>Secondary Member Details </h2>-->
-  <%# else %>
-      <h2>How can we contact you?</h2>
-  <%# end %>
+  <h2>How can we contact you?</h2>
+<!--  TODO: adapt the text in this view based on primary / secondary intake -->
   <%= f.vita_min_text_field(:first_name, "What's your first name?") %>
   <%= f.vita_min_text_field(:last_name, "What's your last name?") %>
   <%= f.vita_min_text_field(:date_of_birth, "What's your birthdate?", options: {type: "date"}) %>
