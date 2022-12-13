@@ -1,4 +1,4 @@
-<%= form_with model: @form, url: { action: :create }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
+<%= form_with model: @benefit_app_form, url: { action: :create }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
   <h2>How can we contact you?</h2>
   <%= f.vita_min_text_field(:address, "What's your address?") %>
   <%= f.vita_min_text_field(:phone_number, "What's your phone number?") %>
