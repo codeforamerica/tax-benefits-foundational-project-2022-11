@@ -29,7 +29,7 @@ class BenefitsApplicationsController < ApplicationController
 
   def create_member
     benefit_app = current_benefit_app
-    had_primary_member = benefit_app.primary_member.present?
+    had_primary_member = benefit_app&.primary_member.present?
 
     if had_primary_member
       @form = benefit_app.secondary_members.build(member_permitted_params)
@@ -48,7 +48,7 @@ class BenefitsApplicationsController < ApplicationController
 
   def validate_application
     benefit_app = current_benefit_app
-    if benefit_app.primary_member.present?
+    if benefit_app&.primary_member.present?
       redirect_to root_url
     else
       render :new_member
