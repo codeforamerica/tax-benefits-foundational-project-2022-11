@@ -1,8 +1,8 @@
 <%= form_with model: @secondary_member_form, url: { action: :create_member }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
   <h2>Tell us about your dependent</h2>
-  <%= f.vita_min_text_field(:first_name, "What's your dependents first name?") %>
-  <%= f.vita_min_text_field(:last_name, "What's your dependents last name?") %>
-  <%= f.vita_min_text_field(:date_of_birth, "What's your dependents birthdate?", options: {type: "date"}) %>
+  <%= f.vita_min_text_field(:first_name, "What's your secondary member's first name?") %>
+  <%= f.vita_min_text_field(:last_name, "What's your secondary member's last name?") %>
+  <%= f.vita_min_text_field(:date_of_birth, "What's your secondary member's birthdate?", options: {type: "date"}) %>
   <%= render 'benefits_applications/member_list', locals: {members: @members} %>
   <%= f.button('Add Member →', type: :submit, formaction: create_member_path, class: "button spacing-above-60") %>
   <br />
