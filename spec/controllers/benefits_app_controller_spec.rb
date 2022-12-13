@@ -94,4 +94,15 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       end
     end
   end
+
+  describe "#validate_application" do
+    let!(:valid_app)  { create :benefit_app, email_address: "app@codeforamerica.org", primary_member: build(:primary_member) }
+
+    it "redirects to root url with a valid benefit app" do
+      post :validate_application, session: { benefit_app_id: valid_app.id }
+      expect(response).to redirect_to root_path
+    end
+
+
+  end
 end

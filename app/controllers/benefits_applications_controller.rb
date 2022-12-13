@@ -48,9 +48,11 @@ class BenefitsApplicationsController < ApplicationController
 
   def validate_application
     benefit_app = current_benefit_app
-    # FIXME: Throw error if there's no primary member associated.
-    # FIXME: MAYBE move 'submitted_at' updating here?
-    # FIXME: Redirect to 'root_url'
+    if benefit_app.primary_member.present?
+      redirect_to root_url
+    else
+      render :new_member
+    end
   end
 
   private
