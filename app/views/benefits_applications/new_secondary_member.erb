@@ -1,5 +1,5 @@
 <%= form_with model: @secondary_member_form, url: { action: :create_member }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
-  <h2>Tell us about your dependent</h2>
+  <h2>Tell us about your secondary member</h2>
   <%= f.vita_min_text_field(:first_name, "What's your secondary member's first name?") %>
   <%= f.vita_min_text_field(:last_name, "What's your secondary member's last name?") %>
   <%= f.vita_min_text_field(:date_of_birth, "What's your secondary member's birthdate?", options: {type: "date"}) %>
