@@ -88,7 +88,7 @@ jobs:
       - checkout
       - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
       - run: git fetch --depth=1000000
-      - run: git push git@beta.aptible.com:tax-foundational-project-2022-11/tfp-prod.git $CIRCLE_SHA1:setup-automatic-deployments-to-aptible-#183820185
+      - run: git push git@beta.aptible.com:tax-foundational-project-2022-11/tfp-prod.git $CIRCLE_SHA1:master
 
     parallelism: 1
 
