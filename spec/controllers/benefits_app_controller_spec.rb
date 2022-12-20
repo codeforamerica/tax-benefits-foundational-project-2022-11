@@ -179,14 +179,5 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(benefit_app.secondary_members.count).to eql(2)
       expect(response).to redirect_to new_member_path
     end
-
-    it "fails to delete a primary member" do
-      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: benefit_app.primary_member.id}
-      benefit_app.secondary_members.reload
-      benefit_app.primary_member.reload
-
-      expect(response).to redirect_to new_member_path
-      expect(benefit_app.primary_member).not_to be_nil
-    end
   end
 end

@@ -85,12 +85,6 @@ class BenefitsApplicationsController < ApplicationController
       return redirect_to new_member_path
     end
 
-    # If it's the primary member, ignore.
-    if benefit_app.primary_member.id == member_id
-      flash[:error] = "You can't remove the primary member from this application."
-      return redirect_to new_member_path
-    end
-
     # If the member isn't in the database, ignore.
     member = Member.find_by(id: member_id)
     if member.nil?
