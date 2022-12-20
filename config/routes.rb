@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get 'validate_application' => 'benefits_applications#validate_application'
   patch 'update_member/:id/update', to: 'benefits_applications#update_member', as: 'update_member'
   get 'members/:id/edit', to: 'benefits_applications#edit_member', as: 'edit_member'
-  delete 'delete_member/:member_id' => 'benefits_applications#delete_member', as: :delete_member
+  get 'delete_member/:member_id' => 'benefits_applications#delete_member', as: :delete_member
 
   root "benefits_applications#index"
 end
