@@ -13,4 +13,8 @@ class Member < ApplicationRecord
       errors.add(:date_of_birth, "Please use the date format (mm/dd/yyyy) or (yyyy-mm-dd)")
     end
   end
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

@@ -36,14 +36,23 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     end
   end
 
-  describe "#new_primary_member" do
+  describe "#new_member" do
     let(:benefit_app) { create(:benefit_app, primary_member: nil) }
+    let(:benefit_app_with_primary) {create(:benefit_app_with_primary_member)}
 
     it "provides a form to create a new primary member" do
-      get :new_primary_member, session: {benefit_app_id: benefit_app.id}
+      get :new_member, session: {benefit_app_id: benefit_app.id}
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include "What's your first name?"
+    end
+
+    it "adapts the view to create secondary members once a primary member exists" do
+      get :new_member, session: {benefit_app_id: benefit_app_with_primary.id}
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include "What's your secondary member's first name?"
+      expect(response.body).to include benefit_app_with_primary.primary_member.full_name
     end
   end
 
@@ -53,32 +62,67 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to new_primary_member_path
+      expect(response).to redirect_to new_member_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
 
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
-      expect(response).not_to redirect_to new_primary_member_path
+      expect(response).not_to redirect_to new_member_path
       expect(response.body).to include "Please enter a valid email address"
     end
   end
 
-  describe "#create_primary_member" do
+  describe "#create_member" do
     let(:benefit_app) { create(:benefit_app, primary_member: nil) }
-    let(:member_params) { attributes_for(:member) }
+    let(:primary_member_params) { attributes_for(:primary_member) }
+    let(:secondary_members_params) { attributes_for_list(:secondary_member, 3) }
 
     it "creates a new primary member with the provided fields" do
-      freeze_time do
-        post :create_primary_member, session: {benefit_app_id: benefit_app.id}, params: {member: member_params}
+      post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
+      benefit_app.reload
+
+      expect(response).to redirect_to new_member_path
+      expect(benefit_app.primary_member).not_to be_nil
+      expect(benefit_app.submitted_at).to be_nil
+    end
+
+    it "creates a new secondary member with the provided fields" do
+      for member_param in secondary_members_params do
+        post :create_member, session: { benefit_app_id: benefit_app.id }, params: { member: member_param }
         benefit_app.reload
 
-        expect(response).to redirect_to root_path
-        expect(benefit_app.primary_member).not_to be_nil
-        expect(benefit_app.submitted_at).not_to be_nil
-        expect(benefit_app.submitted_at).to eq Date.today
+        expect(response).to redirect_to new_member_path
+
+        # get :new_member, session: {benefit_app_id: benefit_app.id}
+        # expect(response.body).to include("#{member_param[:first_name]} #{member_param[:last_name]}")
       end
     end
+  end
+
+  describe "#validate_application" do
+    let!(:valid_app)  { create :benefit_app, email_address: "app@codeforamerica.org", primary_member: build(:primary_member) }
+    let!(:app_without_primary) { create(:benefit_app) }
+
+
+    it "redirects to root url with a valid benefit app" do
+      freeze_time do
+        post :validate_application, session: { benefit_app_id: valid_app.id }
+        expect(response).to redirect_to root_path
+        valid_app.reload
+        expect(valid_app.submitted_at).not_to be_nil
+        expect(valid_app.submitted_at).to eq Date.today
+      end
+    end
+
+    # TODO: fix this test by making the action compatible with the custom form builder
+    it "does not redirect to root url without primary member" do
+      puts app_without_primary.id
+      post :validate_application, session: { benefit_app_id: app_without_primary.id }
+      expect(response).not_to redirect_to root_path
+    end
+
+
   end
 end
