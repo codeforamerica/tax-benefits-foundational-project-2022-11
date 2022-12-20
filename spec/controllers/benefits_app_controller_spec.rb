@@ -171,7 +171,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     end
 
     it "deletes an associated member" do
-      member = subject.secondary_members
+      member = subject.secondary_members.last
       delete :delete_member, session: {benefit_app_id: subject.id}, params: {member_id: member.id}
 
       expect(response).to redirect_to new_member_path

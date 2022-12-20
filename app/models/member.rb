@@ -17,8 +17,4 @@ class Member < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
-
-  def is_primary_member?
-    benefit_app.primary_member_id == id
-  end
 end
