@@ -35,6 +35,17 @@ class BenefitsApplicationsController < ApplicationController
     render :edit_member
   end
 
+  def update_member
+    @member = Member.find(params[:id])
+    if @member.update(member_permitted_params)
+      flash[:success] = "Member successfully updated!"
+      redirect_to new_member_path
+    else
+      flash.now[:error] = "Failed to update member"
+      render :edit_member
+    end
+  end
+
   def create_member
     benefit_app = current_benefit_app
     @members = current_members(benefit_app)
