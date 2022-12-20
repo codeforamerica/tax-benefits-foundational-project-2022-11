@@ -152,4 +152,11 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response.body).to include("updated first name")
     end
   end
+
+  describe "#delete_member" do
+    it "fails to delete a non-existing member"
+    it "fails to delete members not associated to the current application"
+    it "deletes an associated member"
+    it "fails to delete a primary member"
+  end
 end
