@@ -4,6 +4,7 @@
     <tr>
       <td><%= member.full_name %></td>
       <td><%= link_to "Edit", edit_member_path(member) %></td>
+      <%= if member.is_primary_member? %><td><%= link_to "Delete", delete_member_path(member), method: :delete %></td><% end %>
     </tr>
   <% end %>
   </tbody>
