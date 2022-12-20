@@ -30,6 +30,11 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
+  def edit_member
+    @member = Member.find(params[:id])
+    render :edit_member
+  end
+
   def create_member
     benefit_app = current_benefit_app
     @members = current_members(benefit_app)
