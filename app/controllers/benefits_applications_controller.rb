@@ -99,7 +99,7 @@ class BenefitsApplicationsController < ApplicationController
       redirect_to new_member_path
     else
       flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
-      render :new_secondary_member, status: :bad_request
+      render :new_secondary_member
     end
   end
 
