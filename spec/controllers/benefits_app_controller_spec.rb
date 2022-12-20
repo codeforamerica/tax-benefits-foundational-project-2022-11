@@ -145,6 +145,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
       benefit_app.reload
       get :edit_member, params: {id: benefit_app.primary_member.id}
+
     end
   end
 end
