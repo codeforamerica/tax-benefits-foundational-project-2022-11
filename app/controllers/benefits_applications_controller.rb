@@ -81,19 +81,36 @@ class BenefitsApplicationsController < ApplicationController
 
     # 400 if the ID is nil or not a secondary member
     # FIXME: Return the page used to show the list of members here.
-    return redirect_to new_member_path unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
-    return redirect_to new_member_path if benefit_app.primary_member.id == member_id
+    unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
+      flash[:error] = "The member was not found."
+      return redirect_to new_member_path
+    end
+
+    if benefit_app.primary_member.id == member_id
+      flash[:error] = "You can't remove the primary member from this application."
+      return redirect_to new_member_path
+    end
 
     # 410 if the member is successfully
     # FIXME: Return the page used to show the list of members here.
     member = Member.find_by(id: member_id)
-    return redirect_to new_member_path if member.nil?
-    return redirect_to new_member_path unless member.benefit_app_id == benefit_app.id
+    if member.nil?
+      flash[:error] = "The member was not found."
+      return redirect_to new_member_path
+    end
 
-    if member.delete and benefit_app.save
+    unless member.benefit_app_id == benefit_app.id
+      flash[:warn] = "You can't remove the primary member."
+      return redirect_to new_member_path
+    end
+
+    member.destroy
+
+    if member.destroyed? and benefit_app.save
+      flash[:success] = "The member #{member.full_name} was removed."
       redirect_to new_member_path
     else
-      # FIXME: Show some sort of indicator of this failure.
+      flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
       render :new_secondary_member
     end
   end

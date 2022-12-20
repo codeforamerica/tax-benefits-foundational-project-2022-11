@@ -154,36 +154,38 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
   end
 
   describe "#delete_member" do
-    let(:benefit_app) { create(:benefit_app, primary_member: build(:primary_member), secondary_members: build_list(:secondary_member, 3)) }
+    subject { create(:benefit_app, primary_member: build(:primary_member), secondary_members: build_list(:secondary_member, 3)) }
+
     it "fails to delete a non-existing member" do
-      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: {member_id: "nani"}
-      benefit_app.reload
+      delete :delete_member, session: {benefit_app_id: subject.id}, params: {member_id: "nani"}
+      subject.reload
 
       expect(response).to redirect_to new_member_path
     end
 
     it "fails to delete members not associated to the current application" do
-      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: {member_id: create(:primary_member).id}
-      benefit_app.reload
+      delete :delete_member, session: {benefit_app_id: subject.id}, params: {member_id: create(:primary_member).id}
+      subject.reload
 
       expect(response).to redirect_to new_member_path
     end
 
     it "deletes an associated member" do
-      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: {member_id: benefit_app.secondary_members.first.id}
-      benefit_app.secondary_members.reload
+      member = subject.secondary_members
+      delete :delete_member, session: {benefit_app_id: subject.id}, params: {member_id: member.id}
 
       expect(response).to redirect_to new_member_path
-      expect(benefit_app.secondary_members.count).to eql(2)
+      expect(member.destroyed?).to be_truthy
+      expect(subject.secondary_members.count).to eql(2)
     end
 
     it "fails to delete a primary member" do
-      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: {member_id: benefit_app.primary_member.id}
-      benefit_app.secondary_members.reload
-      benefit_app.primary_member.reload
+      delete :delete_member, session: {benefit_app_id: subject.id}, params: {member_id: subject.primary_member.id}
+      subject.secondary_members.reload
+      subject.primary_member.reload
 
-      expect(response).to_not redirect_to new_member_path
-      expect(benefit_app.primary_member).not_to be_nil
+      expect(response).to redirect_to new_member_path
+      expect(subject.primary_member).not_to be_nil
     end
   end
 end
