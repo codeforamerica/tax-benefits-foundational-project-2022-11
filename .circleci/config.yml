@@ -82,9 +82,22 @@ jobs:
       - run: bundle exec rspec
       - store_test_results:
           path: tmp/rspec-test-results
+  deploy_to_aptible--staging:
+    executor: ruby_executor
+    steps:
+      - checkout
+      - run: echo $APTIBLE_PUBLIC_KEY >> ~/.ssh/known_hosts
+      - run: git fetch --depth=1000000
+      - run: git push git@beta.aptible.com:tax-foundational-project-2022-11/tfp-prod.git $CIRCLE_SHA1:master
+    parallelism: 1
 
 workflows:
   version: 2
   ci-and-deploy:
     jobs:
       - run_ruby_tests
+      - deploy_to_aptible--staging:
+          requires: [ run_ruby_tests ]
+          filters:
+            branches:
+              only: main
