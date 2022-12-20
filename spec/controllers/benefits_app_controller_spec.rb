@@ -154,7 +154,14 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
   end
 
   describe "#delete_member" do
-    it "fails to delete a non-existing member"
+    let(:benefit_app) { create(:benefit_app, primary_member: build(:primary_member), secondary_members: build_list(3, :secondary_member)) }
+    it "fails to delete a non-existing member" do
+      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: {member_id: "nani"}
+      benefit_app.reload
+
+      expect(response).to redirect_to new_primary_member_path
+    end
+
     it "fails to delete members not associated to the current application"
     it "deletes an associated member"
     it "fails to delete a primary member"

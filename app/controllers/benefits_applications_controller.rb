@@ -73,6 +73,28 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
+  def delete_member
+    benefit_app = current_benefit_app
+    member_id = params[:member_id]
+
+    # 400 if the ID is nil or not a secondary member
+    # FIXME: Return the page used to show the list of members here.
+    render :new_secondary_member unless benefit_app.secondary_member_ids.contains(member_id.to_i) or member_id.present?
+    return :new_secondary_member if benefit_app.primary_member.id == member_id
+
+    # 410 if the member is successfully
+    # FIXME: Return the page used to show the list of members here.
+    member = Member.find(id: member_id)
+    render :new_secondary_member unless member.benefit_app_id == benefit_app.id
+    render :new_secondary_member if member.nil?
+
+    if member.delete and benefit_app.save
+      render :new_secondary_member
+    else
+      render :new_secondary_member
+    end
+  end
+
   private
 
   def build_member(benefit_app)
