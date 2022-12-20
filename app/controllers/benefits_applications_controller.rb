@@ -76,21 +76,24 @@ class BenefitsApplicationsController < ApplicationController
   def delete_member
     benefit_app = current_benefit_app
     member_id = params[:member_id]
+    @members = current_members(benefit_app)
+    @secondary_member_form = benefit_app.secondary_members.build
 
     # 400 if the ID is nil or not a secondary member
     # FIXME: Return the page used to show the list of members here.
-    render :new_secondary_member unless benefit_app.secondary_member_ids.contains(member_id.to_i) or member_id.present?
-    return :new_secondary_member if benefit_app.primary_member.id == member_id
+    return redirect_to new_member_path unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
+    return redirect_to new_member_path if benefit_app.primary_member.id == member_id
 
     # 410 if the member is successfully
     # FIXME: Return the page used to show the list of members here.
-    member = Member.find(id: member_id)
-    render :new_secondary_member unless member.benefit_app_id == benefit_app.id
-    render :new_secondary_member if member.nil?
+    member = Member.find_by(id: member_id)
+    return redirect_to new_member_path if member.nil?
+    return redirect_to new_member_path unless member.benefit_app_id == benefit_app.id
 
     if member.delete and benefit_app.save
-      render :new_secondary_member
+      redirect_to new_member_path
     else
+      # FIXME: Show some sort of indicator of this failure.
       render :new_secondary_member
     end
   end
