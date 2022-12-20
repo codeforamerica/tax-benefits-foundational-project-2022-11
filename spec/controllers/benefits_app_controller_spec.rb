@@ -150,7 +150,6 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response).to redirect_to new_member_path
       get :new_member
       expect(response.body).to include("updated first name")
-
     end
   end
 end

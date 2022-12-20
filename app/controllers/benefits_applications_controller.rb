@@ -31,6 +31,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def edit_member
+    puts params
     @member = Member.find(params[:id])
     render :edit_member
   end
