@@ -98,6 +98,6 @@ workflows:
       - run_ruby_tests
       - deploy_to_aptible--staging:
           requires: [ run_ruby_tests ]
-          filters:
-            branches:
-              only: main
+#          filters:
+#            branches:
+#              only: main
