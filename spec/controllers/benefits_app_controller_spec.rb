@@ -163,13 +163,6 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response).to redirect_to new_member_path
     end
 
-    it "fails to delete members not associated to the current application" do
-      delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: create(:primary_member).id}
-      benefit_app.reload
-
-      expect(response).to redirect_to new_member_path
-    end
-
     it "deletes an associated member" do
       member = benefit_app.secondary_members.last
       delete :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: member.id.to_s}

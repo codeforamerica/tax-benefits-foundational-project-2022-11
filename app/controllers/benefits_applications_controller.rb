@@ -92,12 +92,6 @@ class BenefitsApplicationsController < ApplicationController
       return redirect_to new_member_path
     end
 
-    # If this member isn't associated with the benefit app, ignore.
-    unless member.benefit_app_id == benefit_app.id
-      flash[:warn] = "Something went wrong with attempting to remove a member. Please try again."
-      return redirect_to new_member_path
-    end
-
     member.destroy
 
     if member.destroyed?
