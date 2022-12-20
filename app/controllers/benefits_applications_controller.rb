@@ -75,43 +75,43 @@ class BenefitsApplicationsController < ApplicationController
 
   def delete_member
     benefit_app = current_benefit_app
-    member_id = params[:member_id]
+    member_id = params[:member_id].to_s.to_i
     @members = current_members(benefit_app)
     @secondary_member_form = benefit_app.secondary_members.build
 
-    # 400 if the ID is nil or not a secondary member
-    # FIXME: Return the page used to show the list of members here.
+    # If we don't recognize this member as a member ID, ignore.
     unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
       flash[:error] = "The member was not found."
       return redirect_to new_member_path
     end
 
+    # If it's the primary member, ignore.
     if benefit_app.primary_member.id == member_id
       flash[:error] = "You can't remove the primary member from this application."
       return redirect_to new_member_path
     end
 
-    # 410 if the member is successfully
-    # FIXME: Return the page used to show the list of members here.
+    # If the member isn't in the database, ignore.
     member = Member.find_by(id: member_id)
     if member.nil?
       flash[:error] = "The member was not found."
       return redirect_to new_member_path
     end
 
+    # If this member isn't associated with the benefit app, ignore.
     unless member.benefit_app_id == benefit_app.id
-      flash[:warn] = "You can't remove the primary member."
+      flash[:warn] = "Something went wrong with attempting to remove a member. Please try again."
       return redirect_to new_member_path
     end
 
     member.destroy
 
-    if member.destroyed? and benefit_app.save
+    if member.destroyed?
       flash[:success] = "The member #{member.full_name} was removed."
       redirect_to new_member_path
     else
       flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
-      render :new_secondary_member
+      render :new_secondary_member, status: :bad_request
     end
   end
 
