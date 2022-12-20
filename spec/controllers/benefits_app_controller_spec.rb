@@ -72,6 +72,19 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response).not_to redirect_to new_member_path
       expect(response.body).to include "Please enter a valid email address"
     end
+
+    it "heads back to app listing on successful creation" do
+      post :create, params: params
+      expect(response).to redirect_to new_member_path
+      expect(BenefitApp.all.length).to eq 1
+      expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
+    end
+
+    it "shows validation errors on failure to create app" do
+      post :create, params: bad_params
+      expect(response).not_to redirect_to new_member_path
+      expect(response.body).to include "Please enter a valid email address"
+    end
   end
 
   describe "#create_member" do
@@ -118,11 +131,25 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     # TODO: fix this test by making the action compatible with the custom form builder
     it "does not redirect to root url without primary member" do
-      puts app_without_primary.id
       post :validate_application, session: { benefit_app_id: app_without_primary.id }
       expect(response).not_to redirect_to root_path
     end
 
+  end
 
+  describe "#edit_member" do
+    let(:benefit_app) { create(:benefit_app, primary_member: nil) }
+    let(:primary_member_params) { attributes_for(:primary_member) }
+
+    it "updates the primary member with provided edits" do
+      post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
+      benefit_app.reload
+      get :edit_member, params: {id: benefit_app.primary_member.id}
+      expect(response.body).to include("Edit Member")
+      post :update_member, params: {id: benefit_app.primary_member.id, member: {first_name: "updated first name", last_name: "updated last name"} }
+      expect(response).to redirect_to new_member_path
+      get :new_member
+      expect(response.body).to include("updated first name")
+    end
   end
 end
