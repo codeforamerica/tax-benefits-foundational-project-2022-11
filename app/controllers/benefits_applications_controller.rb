@@ -160,7 +160,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def member_permitted_params
-    params.require(:member).permit(:first_name, :last_name, :date_of_birth, :is_primary)
+    params.require(:member).permit(:first_name, :last_name, :date_of_birth, :is_primary, :ssn)
   end
 
   def benefits_permitted_params
