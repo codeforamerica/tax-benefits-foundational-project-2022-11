@@ -78,24 +78,23 @@ RSpec.describe BenefitApp, type: :model do
         expect(benefit_app.secondary_members.count).to eql(0)
         expect(benefit_app.primary_member_id).to eql(alleged_secondary_member.id)
       end
-
-      it "fails to associate a duplicate primary member" do
-        benefit_app = create(:benefit_app)
-        expect(benefit_app).to be_valid
-
-        primary_member = benefit_app.create_primary_member(attributes_for(:primary_member))
-        expect(primary_member).to be_valid
-
-        # TODO: this behavior no longer works with dependent: destroy - it deletes the old association before trying to create new one.
-        # expect {
-        #   benefit_app.build_primary_member(attributes_for(:primary_member))
-        # }.to raise_error(ActiveRecord::RecordNotSaved, /existing associated primary_member/)
-        benefit_app.primary_member.destroy
-
-        expect {
-          benefit_app.create_primary_member(attributes_for(:primary_member))
-        }.not_to raise_error
-      end
+      # TODO: this behavior no longer works with dependent: destroy - it deletes the old association before trying to create new one.
+      # it "fails to associate a duplicate primary member" do
+      #   benefit_app = create(:benefit_app)
+      #   expect(benefit_app).to be_valid
+      #
+      #   primary_member = benefit_app.create_primary_member(attributes_for(:primary_member))
+      #   expect(primary_member).to be_valid
+      #
+      #   expect {
+      #     benefit_app.build_primary_member(attributes_for(:primary_member))
+      #   }.to raise_error(ActiveRecord::RecordNotSaved, /existing associated primary_member/)
+      #   benefit_app.primary_member.destroy
+      #
+      #   expect {
+      #     benefit_app.create_primary_member(attributes_for(:primary_member))
+      #   }.not_to raise_error
+      # end
     end
   end
 end
