@@ -172,5 +172,26 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(benefit_app.secondary_members.count).to eql(2)
       expect(response).to redirect_to new_member_path
     end
+
+  describe "#delete_benefit_app" do
+    let(:params) { {benefit_app: {email_address: "Gary@Guava.com", phone_number: "8001002210", address: "1322 wallaby way"}} }
+    # let(:benefit_app) { create(:benefit_app, primary_member: nil) }
+    let(:primary_member_params) { attributes_for(:primary_member) }
+    it "removes an existing record from the database which results in removal from the benefits apps index and associated members" do
+      post :create, params: params
+      benefits_apps = BenefitApp.all
+      benefit_app = BenefitApp.first
+      post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
+      benefit_app.reload
+      primary_member = benefit_app.primary_member
+      delete :delete_benefit_app, params: { benefit_app_id: benefit_app.id }
+      expect(response).to redirect_to root_path
+      get :index
+      expect(response.body).not_to include "#{primary_member.full_name}"
+      new_benefits_apps = BenefitApp.all
+      expect(benefits_apps.length == new_benefits_apps.length + 1)
+
+    end
+
   end
 end
