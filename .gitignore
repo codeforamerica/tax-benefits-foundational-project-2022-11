@@ -37,3 +37,4 @@ config/credentials/*.key
 .aptible.env
 
 *.DS_Store
+/config/credentials/test.key
