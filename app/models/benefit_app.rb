@@ -8,7 +8,7 @@ class BenefitApp < ApplicationRecord
   validates :submitted_at, presence: false
 
   has_one :primary_member, -> { where(is_primary: true) }, class_name: 'Member', dependent: :destroy
-  has_many :secondary_members, -> { where(is_primary: false) }, class_name: 'Member', dependent: :delete_all
+  has_many :secondary_members, -> { where(is_primary: false) }, class_name: 'Member', dependent: :destroy
 
   def primary_member_name
     if primary_member.present?
