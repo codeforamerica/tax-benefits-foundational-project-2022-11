@@ -73,6 +73,36 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
+  def delete_member
+    benefit_app = current_benefit_app
+    member_id = params[:member_id].to_s.to_i
+    @members = current_members(benefit_app)
+    @secondary_member_form = benefit_app.secondary_members.build
+
+    # If we don't recognize this member as a member ID, ignore.
+    unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
+      flash.now[:error] = "The member was not found."
+      return redirect_to new_member_path
+    end
+
+    # If the member isn't in the database, ignore.
+    member = Member.find_by(id: member_id)
+    if member.nil?
+      flash.now[:error] = "The member was not found."
+      return redirect_to new_member_path
+    end
+
+    member.destroy
+
+    if member.destroyed?
+      flash.now[:success] = "The member #{member.full_name} was removed."
+      redirect_to new_member_path
+    else
+      flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
+      render :new_secondary_member
+    end
+  end
+
   private
 
   def build_member(benefit_app)

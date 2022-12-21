@@ -152,4 +152,25 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response.body).to include("updated first name")
     end
   end
+
+  describe "#delete_member" do
+    let(:benefit_app) { create(:benefit_app, primary_member: build(:primary_member), secondary_members: build_list(:secondary_member, 3)) }
+
+    it "fails to delete a non-existing member" do
+      get :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: "nani"}
+      benefit_app.reload
+
+      expect(response).to redirect_to new_member_path
+    end
+
+    it "deletes an associated member" do
+      member = benefit_app.secondary_members.last
+      get :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: member.id.to_s}
+
+      benefit_app.reload
+
+      expect(benefit_app.secondary_members.count).to eql(2)
+      expect(response).to redirect_to new_member_path
+    end
+  end
 end
