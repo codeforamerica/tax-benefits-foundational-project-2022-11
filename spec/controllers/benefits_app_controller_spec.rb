@@ -138,16 +138,20 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
   end
 
   describe "#edit_member" do
-    let(:benefit_app) { create(:benefit_app, primary_member: nil) }
+    let(:benefit_app) { create(:benefit_app) }
     let(:primary_member_params) { attributes_for(:primary_member) }
 
     it "updates the primary member with provided edits" do
       post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
       benefit_app.reload
+      expect(response).to redirect_to new_member_path
+
       get :edit_member, params: {id: benefit_app.primary_member.id}
       expect(response.body).to include("Edit Member")
+
       post :update_member, params: {id: benefit_app.primary_member.id, member: {first_name: "updated first name", last_name: "updated last name"} }
       expect(response).to redirect_to new_member_path
+
       get :new_member
       expect(response.body).to include("updated first name")
     end
