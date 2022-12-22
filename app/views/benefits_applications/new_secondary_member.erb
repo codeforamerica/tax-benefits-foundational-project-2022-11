@@ -6,5 +6,5 @@
   <%= render 'benefits_applications/member_list', locals: {members: @members} %>
   <%= f.button('Add Member →', type: :submit, formaction: create_member_path, class: "button spacing-above-60") %>
   <br />
-  <%= link_to "Continue →", validate_application_path, method: :post, class: "button button--wide button--primary" %>
+  <%= link_to "Continue →", validate_application_path, method: :get, class: "button button--wide button--primary" %>
 <% end %>

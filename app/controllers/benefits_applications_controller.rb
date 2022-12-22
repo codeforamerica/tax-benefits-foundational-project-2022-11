@@ -17,6 +17,13 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
+  def delete_benefit_app
+    @benefit_app = BenefitApp.find(params[:benefit_app_id])
+    @benefit_app.destroy
+    flash[:notice] = "The benefit app was successfully destroyed."
+    redirect_to root_path
+  end
+
   def new_member
     benefit_app = current_benefit_app
     @is_primary = benefit_app.primary_member.present?
