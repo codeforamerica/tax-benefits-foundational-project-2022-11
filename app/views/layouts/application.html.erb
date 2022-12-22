@@ -11,10 +11,8 @@
 
   <body>
     <%= yield  %>
-    <% flash.each do |type, msg| %>
-    <div>
-      <%= msg %>
+    <div class="flash-alerts">
+      <%= render "shared/flash_alerts", flash: flash %>
     </div>
-  <% end %>
   </body>
 </html>

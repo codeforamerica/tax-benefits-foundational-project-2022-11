@@ -194,4 +194,5 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     end
 
   end
-end
+  end
+  end
