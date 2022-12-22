@@ -7,6 +7,7 @@
         <th>App number</th>
         <th>Date submitted</th>
         <th>Applicant</th>
+        <th> </th>
       </tr>
       </thead>
       <tbody>
@@ -15,6 +16,7 @@
           <td><%= benefit_app.id %></td>
           <td><%= benefit_app.submitted_at or 'Not Submitted' %></td>
           <td><%= benefit_app.primary_member_name %></td>
+          <td><%= link_to "Delete", delete_benefit_app_path(benefit_app), method: :delete  %></td>
         </tr>
       <% end %>
       </tbody>
