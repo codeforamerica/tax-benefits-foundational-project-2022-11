@@ -201,6 +201,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     it "allows editing benefits applications and reflects edited information on index" do
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
       expect(response.body).to include("Edit Benefits Application")
+
       post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "update@codeforamerica.org" } }
       expect(response).to redirect_to new_member_path
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
@@ -216,4 +217,5 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
   end
     end
+
 end
