@@ -20,7 +20,7 @@ class BenefitsApplicationsController < ApplicationController
   def delete_benefit_app
     @benefit_app = BenefitApp.find(params[:benefit_app_id])
     @benefit_app.destroy
-    flash[:success] = "The benefit app was successfully destroyed."
+    flash[:notice] = "The benefit app was successfully destroyed."
     redirect_to root_path
   end
 
