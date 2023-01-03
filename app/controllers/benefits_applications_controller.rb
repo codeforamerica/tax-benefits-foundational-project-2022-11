@@ -11,7 +11,7 @@ class BenefitsApplicationsController < ApplicationController
     @benefit_app_form = BenefitApp.new(benefits_permitted_params)
     if @benefit_app_form.save
       session[:benefit_app_id] = @benefit_app_form.id
-      redirect_to members_path
+      redirect_to new_member_path
     else
       render :new
     end
@@ -96,10 +96,10 @@ class BenefitsApplicationsController < ApplicationController
 
     if benefit_app&.primary_member.present?
       @secondary_member_form = built_member
-      attempt_to_persist_and_route_member(benefit_app, @secondary_member_form)
+      save_member(benefit_app, @secondary_member_form)
     else
       @primary_member_form = built_member
-      attempt_to_persist_and_route_member(benefit_app, @primary_member_form)
+      save_member(benefit_app, @primary_member_form)
     end
   end
 
@@ -139,7 +139,7 @@ class BenefitsApplicationsController < ApplicationController
 
     if member.destroyed?
       flash.now[:success] = "The member #{member.full_name} was removed."
-      redirect_to members_path
+      redirect_to new_member_path
     else
       flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
       render :new_secondary_member
@@ -158,11 +158,11 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
-  def attempt_to_persist_and_route_member(benefit_app, member_form)
+  def save_member(benefit_app, member_form)
     had_primary_member = benefit_app&.primary_member.present?
 
     if member_form.save && benefit_app.save
-      redirect_to members_path
+      redirect_to new_member_path
     else
       render :new_secondary_member if had_primary_member
       render :new_member unless had_primary_member

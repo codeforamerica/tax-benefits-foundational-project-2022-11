@@ -62,7 +62,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to members_path
+      expect(response).to redirect_to new_member_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
@@ -75,7 +75,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to members_path
+      expect(response).to redirect_to new_member_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
@@ -96,7 +96,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
       benefit_app.reload
 
-      expect(response).to redirect_to members_path
+      expect(response).to redirect_to new_member_path
       expect(benefit_app.primary_member).not_to be_nil
       expect(benefit_app.submitted_at).to be_nil
     end
@@ -106,7 +106,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
         post :create_member, session: { benefit_app_id: benefit_app.id }, params: { member: member_param }
         benefit_app.reload
 
-        expect(response).to redirect_to members_path
+        expect(response).to redirect_to new_member_path
 
         # get :new_member, session: {benefit_app_id: benefit_app.id}
         # expect(response.body).to include("#{member_param[:first_name]} #{member_param[:last_name]}")
@@ -170,7 +170,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       benefit_app.reload
 
       expect(benefit_app.secondary_members.count).to eql(2)
-      expect(response).to redirect_to members_path
+      expect(response).to redirect_to new_member_path
     end
 
   describe "#delete_benefit_app" do
