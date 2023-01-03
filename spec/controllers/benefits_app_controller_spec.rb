@@ -213,6 +213,10 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       expect(response).not_to redirect_to root_path
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
       expect(response.body).not_to include("123")
+
+      post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "update@codeforamerica.org" } }
+      get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
+      expect(response.body).to include("update@codeforamerica.org")
     end
 
   end
