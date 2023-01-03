@@ -1,7 +1,9 @@
-<%= form_with model: @member, url: { action: :update_member }, method: :patch, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
-  <h2>Edit Member</h2>
-  <%= f.vita_min_text_field(:first_name, "What's your first name?") %>
-  <%= f.vita_min_text_field(:last_name, "What's your last name?") %>
-  <%= f.vita_min_text_field(:date_of_birth, "What's your birthdate?", options: {type: "date"}) %>
-  <%= f.button('Edit Member →', type: :submit, class: "button spacing-above-60") %>
-<% end %>
+<%#= form_with model: @member, url: { action: :update_member }, method: :patch, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
+<!--  <h2>Edit Member</h2>-->
+  <%#= f.vita_min_text_field(:first_name, "What's your first name?") %>
+  <%#= f.vita_min_text_field(:last_name, "What's your last name?") %>
+  <%#= f.vita_min_text_field(:date_of_birth, "What's your birthdate?", options: {type: "date"}) %>
+  <%#= f.button('Edit Member →', type: :submit, class: "button spacing-above-60") %>
+<%# end %>
+
+<%= render "shared/member_form", form_title: "Edit Member", button_title: "Edit Member →" %>

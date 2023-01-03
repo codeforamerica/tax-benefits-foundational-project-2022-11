@@ -11,7 +11,7 @@ class BenefitsApplicationsController < ApplicationController
     @benefit_app_form = BenefitApp.new(benefits_permitted_params)
     if @benefit_app_form.save
       session[:benefit_app_id] = @benefit_app_form.id
-      redirect_to new_member_path
+      redirect_to members_path
     else
       render :new
     end
@@ -74,7 +74,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def edit_member
-    @member = Member.find(params[:id])
+    @primary_member_form = Member.find(params[:id])
     render :edit_member
   end
 
@@ -82,7 +82,7 @@ class BenefitsApplicationsController < ApplicationController
     @member = Member.find(params[:id])
     if @member.update(member_permitted_params)
       flash[:success] = "Member successfully updated!"
-      redirect_to new_member_path
+      redirect_to members_path
     else
       flash.now[:error] = "Failed to update member"
       render :edit_member
@@ -125,21 +125,21 @@ class BenefitsApplicationsController < ApplicationController
     # If we don't recognize this member as a member ID, ignore.
     unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
       flash.now[:error] = "The member was not found."
-      return redirect_to new_member_path
+      return redirect_to members_path
     end
 
     # If the member isn't in the database, ignore.
     member = Member.find_by(id: member_id)
     if member.nil?
       flash.now[:error] = "The member was not found."
-      return redirect_to new_member_path
+      return redirect_to members_path
     end
 
     member.destroy
 
     if member.destroyed?
       flash.now[:success] = "The member #{member.full_name} was removed."
-      redirect_to new_member_path
+      redirect_to members_path
     else
       flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
       render :new_secondary_member
@@ -162,7 +162,7 @@ class BenefitsApplicationsController < ApplicationController
     had_primary_member = benefit_app&.primary_member.present?
 
     if member_form.save && benefit_app.save
-      redirect_to new_member_path
+      redirect_to members_path
     else
       render :new_secondary_member if had_primary_member
       render :new_member unless had_primary_member

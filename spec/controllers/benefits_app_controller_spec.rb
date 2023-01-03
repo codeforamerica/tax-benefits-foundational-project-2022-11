@@ -62,27 +62,27 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
 
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
-      expect(response).not_to redirect_to new_member_path
+      expect(response).not_to redirect_to members_path
       expect(response.body).to include "Please enter a valid email address"
     end
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
 
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
-      expect(response).not_to redirect_to new_member_path
+      expect(response).not_to redirect_to members_path
       expect(response.body).to include "Please enter a valid email address"
     end
   end
@@ -96,7 +96,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       post :create_member, session: { benefit_app_id: benefit_app.id}, params: { member: primary_member_params }
       benefit_app.reload
 
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
       expect(benefit_app.primary_member).not_to be_nil
       expect(benefit_app.submitted_at).to be_nil
     end
@@ -106,7 +106,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
         post :create_member, session: { benefit_app_id: benefit_app.id }, params: { member: member_param }
         benefit_app.reload
 
-        expect(response).to redirect_to new_member_path
+        expect(response).to redirect_to members_path
 
         # get :new_member, session: {benefit_app_id: benefit_app.id}
         # expect(response.body).to include("#{member_param[:first_name]} #{member_param[:last_name]}")
@@ -147,7 +147,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       get :edit_member, params: {id: benefit_app.primary_member.id}
       expect(response.body).to include("Edit Member")
       post :update_member, params: {id: benefit_app.primary_member.id, member: {first_name: "updated first name", last_name: "updated last name"} }
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
       get :new_member
       expect(response.body).to include("updated first name")
     end
@@ -160,7 +160,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       get :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: "nani"}
       benefit_app.reload
 
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
     end
 
     it "deletes an associated member" do
@@ -170,7 +170,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       benefit_app.reload
 
       expect(benefit_app.secondary_members.count).to eql(2)
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
     end
 
   describe "#delete_benefit_app" do
