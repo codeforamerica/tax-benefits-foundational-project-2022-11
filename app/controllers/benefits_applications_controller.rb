@@ -24,15 +24,33 @@ class BenefitsApplicationsController < ApplicationController
     redirect_to root_path
   end
 
+  def edit_benefits_app
+    @benefit_app = BenefitApp.find(params[:benefit_app_id])
+    render :edit_benefits_app
+  end
+
+  def update_benefits_app
+    @benefit_app = BenefitApp.find(params[:benefit_app_id])
+    @members = current_members(@benefit_app)
+    # @members = current_members(@benefit_app)
+    if @benefit_app.update(benefits_permitted_params)
+      flash[:success] = "Benefits app successfully updated!"
+      redirect_to new_member_path, benefit_app_id: params[:benefit_app_id]
+    else
+      flash.now[:error] = "Failed to update benefits app"
+      render :edit_benefits_app
+    end
+  end
+
   def new_member
     benefit_app = current_benefit_app
     @is_primary = benefit_app.primary_member.present?
     @members = current_members(benefit_app)
     if @is_primary
-      @secondary_member_form = benefit_app&.secondary_members.build
+      @member_form = benefit_app&.secondary_members.build
       render :new_secondary_member
     else
-      @primary_member_form = benefit_app&.build_primary_member
+      @member_form = benefit_app&.build_primary_member
       render :new_member
     end
   end
@@ -75,7 +93,7 @@ class BenefitsApplicationsController < ApplicationController
       redirect_to root_url
     else
       @members = current_members(benefit_app)
-      @primary_member_form = benefit_app.build_primary_member
+      @member_form = benefit_app.build_primary_member
       render :new_member
     end
   end

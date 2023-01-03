@@ -194,5 +194,26 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     end
 
   end
+
+  describe "#edit_benefits_application" do
+    let(:benefit_app) { create(:benefit_app, primary_member: build(:primary_member), secondary_members: build_list(:secondary_member, 3)) }
+
+    it "allows editing benefits applications and reflects edited information on index" do
+      get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
+      expect(response.body).to include("Edit Benefits Application")
+      post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "update@codeforamerica.org" } }
+      expect(response).to redirect_to new_member_path
+      get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
+      expect(response.body).to include("update@codeforamerica.org")
+    end
+
+    it "does not redirect or reflect updates with invalid params" do
+      post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "123" } }
+      expect(response).not_to redirect_to root_path
+      get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
+      expect(response.body).not_to include("123")
+    end
+
   end
-  end
+    end
+end
