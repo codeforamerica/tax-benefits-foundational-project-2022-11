@@ -80,7 +80,7 @@ end
 
 group :development, :test do
   # Test harness
-  gem 'rspec-rails', '~> 6.0.0'
+  gem 'rspec-rails'
 
   # Factory generator
   gem 'factory_bot_rails'
