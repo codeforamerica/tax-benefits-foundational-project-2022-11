@@ -74,7 +74,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def edit_member
-    @primary_member_form = Member.find(params[:id])
+    @member_form = Member.find(params[:id])
     render :edit_member
   end
 
@@ -92,15 +92,8 @@ class BenefitsApplicationsController < ApplicationController
   def create_member
     benefit_app = current_benefit_app
     @members = current_members(benefit_app)
-    built_member = build_member(benefit_app)
-
-    if benefit_app&.primary_member.present?
-      @secondary_member_form = built_member
-      save_member(benefit_app, @secondary_member_form)
-    else
-      @primary_member_form = built_member
-      save_member(benefit_app, @primary_member_form)
-    end
+    @member_form = build_member(benefit_app)
+    save_member(benefit_app, @member_form)
   end
 
   def validate_application
@@ -120,7 +113,7 @@ class BenefitsApplicationsController < ApplicationController
     benefit_app = current_benefit_app
     member_id = params[:member_id].to_s.to_i
     @members = current_members(benefit_app)
-    @secondary_member_form = benefit_app.secondary_members.build
+    @member_form = benefit_app.secondary_members.build
 
     # If we don't recognize this member as a member ID, ignore.
     unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
