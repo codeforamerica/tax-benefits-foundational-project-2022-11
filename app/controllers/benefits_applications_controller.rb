@@ -17,7 +17,6 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
-<<<<<<< HEAD
   # def edit_benefits_app
   #   @benefit_app = BenefitApp.find(params[:benefit_app_id])
   #   render :edit_benefits_app
@@ -43,7 +42,7 @@ class BenefitsApplicationsController < ApplicationController
 
 
   def edit_benefits_app
-    @benefit_app = BenefitApp.find(params[:benefit_app_id])
+    @benefit_app_form = BenefitApp.find(params[:benefit_app_id])
     render :edit_benefits_app
   end
 
@@ -51,6 +50,7 @@ class BenefitsApplicationsController < ApplicationController
     @benefit_app = BenefitApp.find(params[:benefit_app_id])
     @members = current_members(@benefit_app)
     # @members = current_members(@benefit_app)
+
     if @benefit_app.update(benefits_permitted_params)
       flash[:success] = "Benefits app successfully updated!"
       redirect_to new_member_path, benefit_app_id: params[:benefit_app_id]
