@@ -1,4 +1,4 @@
-<%= form_with model: @primary_member_form, url: { action: :create_member }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
+<%= form_with model: @member_form, url: { action: :create_member }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
   <h2>Tell us about yourself</h2>
   <%= f.vita_min_text_field(:first_name, "What's your first name?") %>
   <%= f.vita_min_text_field(:last_name, "What's your last name?") %>
