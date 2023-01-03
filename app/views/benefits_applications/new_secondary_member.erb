@@ -4,7 +4,7 @@
   <%= f.vita_min_text_field(:last_name, "What's your secondary member's last name?") %>
   <%= f.vita_min_text_field(:date_of_birth, "What's your secondary member's birthdate?", options: {type: "date"}) %>
   <%= render 'benefits_applications/member_list', locals: {members: @members} %>
-  <%= f.button('Add Member →', type: :submit, formaction: create_member_path, class: "button spacing-above-60") %>
+  <%= f.button('Add Member →', type: :submit, formaction: members_path, class: "button spacing-above-60") %>
   <br />
   <%= link_to "Continue →", validate_application_path, method: :get, class: "button button--wide button--primary" %>
 <% end %>

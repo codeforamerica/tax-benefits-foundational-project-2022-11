@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   get 'new' => 'benefits_applications#new', as: :new_benefit_app
   post 'create' => 'benefits_applications#create', as: :benefit_apps
   delete 'delete_benefit_app/:benefit_app_id' => 'benefits_applications#delete_benefit_app', as: :delete_benefit_app
-  get 'new_member' => 'benefits_applications#new_member', as: :members
-  post 'create_member' => 'benefits_applications#create_member'
+  get 'new_member' => 'benefits_applications#new_member', as: :new_member
+  post 'create_member' => 'benefits_applications#create_member', as: :members
   get 'validate_application' => 'benefits_applications#validate_application'
 
   patch 'update_member/:id', to: 'benefits_applications#update_member', as: :member
