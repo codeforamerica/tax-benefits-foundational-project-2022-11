@@ -25,7 +25,10 @@ RSpec.describe "benefit app submissions", type: :system do
       fill_in "What's your first name?", with: primary_member_params[:first_name]
       fill_in "What's your last name?", with: primary_member_params[:last_name]
       fill_in "What's your birthdate?", with: primary_member_params[:date_of_birth]
-      click_button "Continue"
+      fill_in "What's your social security number (SSN)?", with: primary_member_params[:ssn]
+      click_button "Add Member →"
+      expect(page).to have_text("Tell us about your secondary member")
+      click_on "Continue"
 
       full_name = "#{primary_member_params[:first_name]} #{primary_member_params[:last_name]}"
       expect(page).to have_text(full_name)
