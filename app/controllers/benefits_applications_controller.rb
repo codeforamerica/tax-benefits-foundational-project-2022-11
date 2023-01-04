@@ -24,7 +24,6 @@ class BenefitsApplicationsController < ApplicationController
     redirect_to root_path
   end
 
-
   def edit_benefits_app
     @benefit_app_form = BenefitApp.find(params[:benefit_app_id])
     render :edit_benefits_app

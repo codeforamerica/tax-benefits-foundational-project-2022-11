@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "a user creating a new benefits application" do
 
-    scenario "I can go through the flow of creating an application with benefits" do
+    scenario "I can go through the flow of creating a benefits application with members" do
       visit root_path
       click_on "New Application"
       expect(page).to have_text "How can we contact you?"
