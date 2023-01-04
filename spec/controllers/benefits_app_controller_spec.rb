@@ -210,12 +210,12 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "does not redirect or reflect updates with invalid params" do
       post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "123" } }
-      expect(response).not_to redirect_to root_path
+      expect(response).not_to redirect_to new_member_path
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
       expect(response.body).not_to include("123")
 
       post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "update@codeforamerica.org" } }
-      expect(response).to redirect_to root_path
+      expect(response).to redirect_to new_member_path
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
       expect(response.body).to include("update@codeforamerica.org")
     end

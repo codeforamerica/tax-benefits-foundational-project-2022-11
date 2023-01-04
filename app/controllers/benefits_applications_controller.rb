@@ -47,11 +47,11 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def update_benefits_app
-    @benefit_app = BenefitApp.find(params[:benefit_app_id])
-    @members = current_members(@benefit_app)
+    @benefit_app_form = BenefitApp.find(params[:benefit_app_id])
+    @members = current_members(@benefit_app_form)
     # @members = current_members(@benefit_app)
 
-    if @benefit_app.update(benefits_permitted_params)
+    if @benefit_app_form.update(benefits_permitted_params)
       flash[:success] = "Benefits app successfully updated!"
       redirect_to new_member_path, benefit_app_id: params[:benefit_app_id]
     else
