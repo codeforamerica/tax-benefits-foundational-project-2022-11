@@ -12,11 +12,14 @@ RSpec.feature "a user creating a new benefits application" do
     click_on "Continue →"
   end
 
-  def add_primary_member
+  def add_primary_member(submit=false)
     fill_in "What's your first name?", with: "first"
     fill_in "What's your last name?", with: "last"
     fill_in "What's your birthdate?", with: "03/12/1990"
     click_on "Add Member →"
+    if submit
+      click_on "Continue"
+    end
   end
 
   def add_secondary_member(submit=false)
@@ -88,6 +91,25 @@ RSpec.feature "a user creating a new benefits application" do
     click_on "Delete"
 
     expect(page).not_to have_text "first1 updated secondary"
+
+  end
+
+  scenario "I can edit and delete benefits apps" do
+    create_application
+    add_primary_member(submit=true)
+    expect(page).to have_text("Submitted Applications")
+    click_on "Edit"
+    fill_in "What's your address?", with: "p sherman 42 wallaby way sydney"
+    click_on "Continue →"
+    expect(page).to have_text("Tell us about your secondary member")
+    click_on "Continue →"
+    click_on "Edit"
+    expect(page).to have_field("What's your address?", with: "p sherman 42 wallaby way sydney")
+    click_on "Continue →"
+    click_on "Continue →"
+
+    click_on "Delete"
+    expect(page).not_to have_text("first")
 
 
   end
