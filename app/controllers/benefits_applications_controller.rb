@@ -47,13 +47,12 @@ class BenefitsApplicationsController < ApplicationController
     benefit_app = current_benefit_app
     @is_primary = benefit_app.primary_member.present?
     @members = current_members(benefit_app)
-    if @is_primary
-      @member_form = benefit_app&.secondary_members.build
-      render :new_secondary_member
-    else
-      @member_form = benefit_app&.build_primary_member
-      render :new_member
-    end
+    @member_form = if @is_primary
+                     benefit_app&.secondary_members.build
+                   else
+                     benefit_app&.build_primary_member
+                   end
+    render :new_member
   end
 
   def edit_member
@@ -118,7 +117,7 @@ class BenefitsApplicationsController < ApplicationController
       redirect_to new_member_path
     else
       flash[:error] = "Something went wrong when attempting to remove #{member.full_name}. Please try again."
-      render :new_secondary_member
+      render :new_member
     end
   end
 
@@ -140,8 +139,7 @@ class BenefitsApplicationsController < ApplicationController
     if member_form.save && benefit_app.save
       redirect_to new_member_path
     else
-      render :new_secondary_member if had_primary_member
-      render :new_member unless had_primary_member
+      render :new_member
     end
   end
 
