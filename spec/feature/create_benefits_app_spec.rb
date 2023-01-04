@@ -77,8 +77,19 @@ RSpec.feature "a user creating a new benefits application" do
     end
     expect(page).to have_field("What's your secondary member's first name?", with: "first1")
     expect(page).to have_field("What's your secondary member's last name?",  with: "last1")
-    # expect(page).to have_text "Edit Member"
-    # expect(page).to have_text "first"
+
+    fill_in "What's your secondary member's first name?", with: "first1 updated secondary"
+    fill_in "What's your secondary member's last name?", with: "last1 updated secondary"
+
+    click_on "Edit Member →"
+
+    expect(page).to have_text "first1 updated secondary"
+
+    click_on "Delete"
+
+    expect(page).not_to have_text "first1 updated secondary"
+
+
   end
 
 
