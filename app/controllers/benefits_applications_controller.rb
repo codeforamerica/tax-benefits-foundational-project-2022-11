@@ -82,7 +82,7 @@ class BenefitsApplicationsController < ApplicationController
     @member = Member.find(params[:id])
     if @member.update(member_permitted_params)
       flash[:success] = "Member successfully updated!"
-      redirect_to members_path
+      redirect_to new_member_path
     else
       flash.now[:error] = "Failed to update member"
       render :edit_member
