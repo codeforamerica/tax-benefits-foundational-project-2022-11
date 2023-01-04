@@ -72,7 +72,7 @@ class FoundationalProjectFormBuilder < Cfa::Styleguide::CfaFormBuilder
 
     formatted_label = label(
       method,
-      h1_label_contents(label_text, options[:help_text], options[:optional])
+      h2_label_contents(label_text, options[:help_text], options[:optional])
     )
     html_options_with_errors = html_options.merge(error_attributes(method: method))
 
