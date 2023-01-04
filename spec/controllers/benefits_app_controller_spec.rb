@@ -69,7 +69,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
-      expect(response).not_to redirect_to new_member_path
+      expect(response).not_to redirect_to members_path
       expect(response.body).to include "Please enter a valid email address"
     end
 
@@ -82,7 +82,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "shows validation errors on failure to create app" do
       post :create, params: bad_params
-      expect(response).not_to redirect_to new_member_path
+      expect(response).not_to redirect_to members_path
       expect(response.body).to include "Please enter a valid email address"
     end
   end
@@ -160,7 +160,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       get :delete_member, session: {benefit_app_id: benefit_app.id}, params: { member_id: "nani"}
       benefit_app.reload
 
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to members_path
     end
 
     it "deletes an associated member" do
@@ -201,6 +201,19 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     it "allows editing benefits applications and reflects edited information on index" do
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
       expect(response.body).to include("Edit Benefits Application")
+
+      post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "update@codeforamerica.org" } }
+      expect(response).to redirect_to new_member_path
+      get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
+      expect(response.body).to include("update@codeforamerica.org")
+    end
+
+    it "does not redirect or reflect updates with invalid params" do
+      post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "123" } }
+      expect(response).not_to redirect_to new_member_path
+      get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
+      expect(response.body).not_to include("123")
+
       post :update_benefits_app, params: {benefit_app_id: benefit_app.id, benefit_app: { email_address: "update@codeforamerica.org" } }
       expect(response).to redirect_to new_member_path
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}

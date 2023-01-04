@@ -1,0 +1,7 @@
+<%= form_with model: @member_form, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
+  <h2><%= form_title %></h2>
+  <%= f.vita_min_text_field(:first_name, "What's your #{"secondary member's " unless @member_form&.is_primary}first name?") %>
+  <%= f.vita_min_text_field(:last_name, "What's your #{"secondary member's " unless @member_form&.is_primary}last name?") %>
+  <%= f.vita_min_text_field(:date_of_birth, "What's your #{"secondary member's " unless @member_form&.is_primary}birthdate?", options: {type: "date"}) %>
+  <%= f.button(button_title, type: :submit, class: "button spacing-above-60") %>
+<% end %>

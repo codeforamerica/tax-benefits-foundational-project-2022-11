@@ -25,15 +25,16 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def edit_benefits_app
-    @benefit_app = BenefitApp.find(params[:benefit_app_id])
+    @benefit_app_form = BenefitApp.find(params[:benefit_app_id])
     render :edit_benefits_app
   end
 
   def update_benefits_app
-    @benefit_app = BenefitApp.find(params[:benefit_app_id])
-    @members = current_members(@benefit_app)
+    @benefit_app_form = BenefitApp.find(params[:benefit_app_id])
+    @members = current_members(@benefit_app_form)
     # @members = current_members(@benefit_app)
-    if @benefit_app.update(benefits_permitted_params)
+
+    if @benefit_app_form.update(benefits_permitted_params)
       flash[:success] = "Benefits app successfully updated!"
       redirect_to new_member_path, benefit_app_id: params[:benefit_app_id]
     else
@@ -56,7 +57,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def edit_member
-    @member = Member.find(params[:id])
+    @member_form = Member.find(params[:id])
     render :edit_member
   end
 
@@ -74,15 +75,8 @@ class BenefitsApplicationsController < ApplicationController
   def create_member
     benefit_app = current_benefit_app
     @members = current_members(benefit_app)
-    built_member = build_member(benefit_app)
-
-    if benefit_app&.primary_member.present?
-      @secondary_member_form = built_member
-      attempt_to_persist_and_route_member(benefit_app, @secondary_member_form)
-    else
-      @primary_member_form = built_member
-      attempt_to_persist_and_route_member(benefit_app, @primary_member_form)
-    end
+    @member_form = build_member(benefit_app)
+    save_member(benefit_app, @member_form)
   end
 
   def validate_application
@@ -102,19 +96,19 @@ class BenefitsApplicationsController < ApplicationController
     benefit_app = current_benefit_app
     member_id = params[:member_id].to_s.to_i
     @members = current_members(benefit_app)
-    @secondary_member_form = benefit_app.secondary_members.build
+    @member_form = benefit_app.secondary_members.build
 
     # If we don't recognize this member as a member ID, ignore.
     unless member_id.present? and member_id.in?(benefit_app.secondary_member_ids)
       flash.now[:error] = "The member was not found."
-      return redirect_to new_member_path
+      return redirect_to members_path
     end
 
     # If the member isn't in the database, ignore.
     member = Member.find_by(id: member_id)
     if member.nil?
       flash.now[:error] = "The member was not found."
-      return redirect_to new_member_path
+      return redirect_to members_path
     end
 
     member.destroy
@@ -140,7 +134,7 @@ class BenefitsApplicationsController < ApplicationController
     end
   end
 
-  def attempt_to_persist_and_route_member(benefit_app, member_form)
+  def save_member(benefit_app, member_form)
     had_primary_member = benefit_app&.primary_member.present?
 
     if member_form.save && benefit_app.save

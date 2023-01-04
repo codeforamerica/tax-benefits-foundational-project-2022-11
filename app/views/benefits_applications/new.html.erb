@@ -1,7 +1,1 @@
-<%= form_with model: @benefit_app_form, url: { action: :create }, method: :post, local: true, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
-  <h2>How can we contact you?</h2>
-  <%= f.vita_min_text_field(:address, "What's your address?") %>
-  <%= f.vita_min_text_field(:phone_number, "What's your phone number?") %>
-  <%= f.vita_min_text_field(:email_address, "What's your email address?") %>
-  <%= f.button('Continue →', type: :submit, class: "button button--wide button--primary spacing-above-60") %>
-<% end %>
+<%= render "shared/benefit_app_form", form_title: "How can we contact you?", button_title: "Add Member →" %>
