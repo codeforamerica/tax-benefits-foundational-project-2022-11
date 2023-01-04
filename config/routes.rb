@@ -15,5 +15,9 @@ Rails.application.routes.draw do
   get 'delete_member/:member_id' => 'benefits_applications#delete_member', as: :delete_member
   patch 'update_benefits_apps/:benefit_app_id', to: 'benefits_applications#update_benefits_app', as: :update_benefits_app
   patch 'update_benefits_apps/:benefit_app_id', to: 'benefits_applications#update_benefits_app', as: :benefit_app
+
+  get 'job_status', to: 'benefits_applications#job_status_questions', as: :job_status_questions
+  post 'save_job_status', to: 'benefits_applications#save_job_status', as: :save_job_status
+  post 'update_income_info', to: 'benefits_applications#update_income_info', as: :update_income_info
   root "benefits_applications#index"
 end

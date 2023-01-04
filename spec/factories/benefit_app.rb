@@ -2,9 +2,20 @@ FactoryBot.define do
   factory :benefit_app, class: BenefitApp do
     email_address { "test@codeforamerica.org" }
     address { "1000 Main Way, Left Of, A Country 10001" }
+    has_job { false }
+    monthly_income { 0 }
     phone_number { "8003934448" }
     primary_member { nil }
     secondary_members { [] }
+
+    factory :benefit_app_with_negative_income do
+      monthly_income { -1000 }
+    end
+
+    factory :benefit_app_with_empty_income_info do
+      monthly_income { nil }
+      has_job { nil }
+    end
 
     factory :benefit_app_without_email do
       email_address { "" }

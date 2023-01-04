@@ -38,7 +38,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
   describe "#new_member" do
     let(:benefit_app) { create(:benefit_app, primary_member: nil) }
-    let(:benefit_app_with_primary) {create(:benefit_app_with_primary_member)}
+    let(:benefit_app_with_primary) { create(:benefit_app_with_primary_member)}
 
     it "provides a form to create a new primary member" do
       get :new_member, session: {benefit_app_id: benefit_app.id}
@@ -62,7 +62,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to job_status_questions_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
@@ -75,7 +75,7 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
 
     it "heads back to app listing on successful creation" do
       post :create, params: params
-      expect(response).to redirect_to new_member_path
+      expect(response).to redirect_to job_status_questions_path
       expect(BenefitApp.all.length).to eq 1
       expect(BenefitApp.first.email_address).to eq "Gary@Guava.com"
     end
@@ -84,6 +84,31 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       post :create, params: bad_params
       expect(response).not_to redirect_to members_path
       expect(response.body).to include "Please enter a valid email address"
+    end
+  end
+
+  describe "#save_job_status" do
+    let(:benefit_app) { create(:benefit_app, primary_member: nil) }
+
+    it "continues to job info if the client has a job" do
+      post :save_job_status, params: {benefit_app: {has_job: 1}}, session: { benefit_app_id: benefit_app.id }
+      expect(response.body).to include "monthly income"
+    end
+  end
+
+  describe "#update_income_info" do
+    let (:benefit_app) { create(:benefit_app, primary_member: nil, has_job: true) }
+
+    it "updates the income for a monthly-paid worker" do
+      post :update_income_info, params: {benefit_app: {pay_schedule: "monthly", income: 5_000}}, session: { benefit_app_id: benefit_app.id }
+      benefit_app.reload
+      expect(benefit_app.monthly_income).to eql(5_000)
+    end
+
+    it "updates the income for a biweekly-paid worker" do
+      post :update_income_info, params: {benefit_app: {pay_schedule: "biweekly", income: 5_000}}, session: { benefit_app_id: benefit_app.id }
+      benefit_app.reload
+      expect(benefit_app.monthly_income).to eql(10_000)
     end
   end
 
@@ -228,7 +253,6 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       get :edit_benefits_app, params: {benefit_app_id: benefit_app.id}
       expect(response.body).not_to include("123")
     end
-
-  end
     end
+  end
 end

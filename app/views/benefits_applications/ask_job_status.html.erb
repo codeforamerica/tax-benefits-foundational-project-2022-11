@@ -1,0 +1,12 @@
+<%= form_with model: @benefit_app_form, local: true, method: :post, url: save_job_status_path, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
+  <%= f.cfa_radio_set(
+        :has_job,
+        label_text: "<h2 class=\"form-question\">Do you have a job?</h2>".html_safe,
+        collection: [
+          { value: 0, label: "No, I don't have a job." },
+          { value: 1, label: "Yes, I have a job." },
+        ]
+      )
+  %>
+  <%= f.button('Continue →', type: :submit, class: "button button--wide button--primary spacing-above-60") %>
+<%end %>
