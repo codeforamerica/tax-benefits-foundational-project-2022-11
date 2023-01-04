@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   delete 'delete_benefit_app/:benefit_app_id' => 'benefits_applications#delete_benefit_app', as: :delete_benefit_app
   get 'new_member' => 'benefits_applications#new_member', as: :new_member
   post 'create_member' => 'benefits_applications#create_member', as: :members
-  get 'validate_application' => 'benefits_applications#validate_application'
+  post 'validate_application' => 'benefits_applications#validate_application'
 
   get 'sign_application' => 'benefits_applications#sign_benefits_app', as: :sign_benefits_app
   post 'save_signature' => 'benefits_applications#save_signature', as: :save_signature
