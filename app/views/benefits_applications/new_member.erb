@@ -1,6 +1,7 @@
-<%= render "shared/member_form", form_title: "Tell us about yourself", button_title: "Add Member →" %>
+<%= render "shared/member_form", form_title: "Tell us about #{@member_form&.is_primary ? "yourself" : "your secondary member" }", button_title: "Add Member →" %>
 <%= render 'benefits_applications/member_list', locals: {members: @members} %>
 <br />
 <form method="post" action="<%= validate_application_path %>">
   <button type=submit class="button button--wide button--primary" style="margin-left: 0.125rem" disabled="<%= @is_primary ? '' : 'disabled' %>">Continue →</button>
 </form>
+
