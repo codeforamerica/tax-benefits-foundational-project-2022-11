@@ -10,6 +10,14 @@ RSpec.feature "a user creating a new benefits application" do
     fill_in "What's your phone number?", with: "1234567891"
     fill_in "What's your email address?", with: "test@example.com"
     click_on "Continue →"
+    expect(page).to have_text "Do you have a job?"
+    choose "Yes, I have a job."
+    click_on "Continue →"
+    # puts page.text
+    expect(page).to have_text "Tell us about your monthly income"
+    select 'Biweekly', from: 'What is your pay frequency?'
+    fill_in "How much do you make?", with: 100
+    click_on "Continue →"
   end
 
   def add_primary_member(submit=false)

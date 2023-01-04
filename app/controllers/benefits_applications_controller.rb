@@ -11,10 +11,41 @@ class BenefitsApplicationsController < ApplicationController
     @benefit_app_form = BenefitApp.new(benefits_permitted_params)
     if @benefit_app_form.save
       session[:benefit_app_id] = @benefit_app_form.id
-      redirect_to new_member_path
+      redirect_to job_status_questions_path
+      # redirect_to new_member_path
     else
       render :new
     end
+  end
+
+  def job_status_questions
+    @benefit_app_form = current_benefit_app
+    render :ask_job_status
+  end
+
+  def save_job_status
+    @benefit_app_form = current_benefit_app
+    if @benefit_app_form.update(benefits_permitted_params)
+      if @benefit_app_form.has_job
+        render :ask_income
+      else
+        redirect_to new_member_path
+      end
+    end
+  end
+
+  def update_income_info
+    @benefit_app_form = current_benefit_app
+    pay_schedule = job_income_permitted_params["pay_schedule"]
+    income = job_income_permitted_params["income"].to_i
+    monthly_income = (pay_schedule == "monthly" ? income :  income * 2)
+    if @benefit_app_form.update({monthly_income: monthly_income})
+      redirect_to new_member_path
+    else
+      render :ask_income
+    end
+
+
   end
 
   def delete_benefit_app
@@ -149,8 +180,12 @@ class BenefitsApplicationsController < ApplicationController
     params.require(:member).permit(:first_name, :last_name, :date_of_birth, :is_primary)
   end
 
+  def job_income_permitted_params
+    params.require(:benefit_app).permit(:pay_schedule, :income)
+  end
+
   def benefits_permitted_params
-    params.require(:benefit_app).permit(:email_address, :address, :phone_number)
+    params.require(:benefit_app).permit(:email_address, :address, :phone_number, :has_job, :monthly_income)
   end
 
   def current_benefit_app
