@@ -2,5 +2,5 @@
 <%= render 'benefits_applications/member_list', locals: {members: @members} %>
 <br />
 <form method="post" action="<%= validate_application_path %>">
-  <button type=submit class="button button--wide button--primary" style="margin-left: 0.125rem">Continue →</button>
+  <button type=submit class="button button--wide button--primary" style="margin-left: 0.125rem" disabled="<%= @is_primary ? '' : 'disabled' %>">Continue →</button>
 </form>
