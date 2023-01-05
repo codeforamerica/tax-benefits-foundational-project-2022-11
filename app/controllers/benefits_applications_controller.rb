@@ -48,7 +48,8 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def inform_of_eligibility
-    view_name = current_benefit_app.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
+    @benefit_app = current_benefit_app
+    view_name = @benefit_app.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
     render view_name
   end
 

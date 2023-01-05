@@ -1,10 +1,7 @@
 <div class="card">
-  <div class="emoji emoji-size-155 emoji--clipboard"></div>
-  <h1>You May Not Be Eligible</h1>
-  <p>
-    You've reported making <strong><%= number_to_currency(@benefit_app_form.monthly_income, unit: "$") %></strong>,
-    which is outside the eligibility range for this service. Continuing will help
-    determine eligibility.
-  </p>
-  <%= link_to 'Continue →', new_member_path , class: 'button button--primary' %>
+  <h2>Based on your info, you may be over the pre-tax income limit.</h2>
+  <p>Your pre-tax income:</p>
+  <p><%= number_to_currency(@benefit_app.monthly_income * 12, unit: "$") %></p>
+  <p>You can still apply but might not qualify.</p>
+  <%= link_to 'Apply anyway', new_member_path , class: 'button' %>
 </div>

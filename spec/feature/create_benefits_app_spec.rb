@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.feature 'a user creating a new benefits application', js: true do
-  def create_application
+  def create_application(make_eligibile = true)
     visit root_path
     click_on 'New Application'
     expect(page).to have_text 'How can we contact you?'
@@ -18,10 +18,12 @@ RSpec.feature 'a user creating a new benefits application', js: true do
 
     expect(page).to have_text 'Tell us about your monthly income'
     select 'Biweekly', from: 'What is your pay frequency?'
-    fill_in 'How much do you make?', with: 100
+    fill_in 'How much do you make?', with: make_eligibile ? 100 : 1_000
     click_on 'Continue →'
-    expect(page).to have_text 'qualify for benefits'
-    click_on 'Continue →'
+    expect(page).to have_text 'qualify for benefits' if make_eligibile
+    expect(page).to have_text 'may be over the pre-tax' unless make_eligibile
+    click_on 'Continue →' if make_eligibile
+    click_on 'Apply anyway' unless make_eligibile
   end
 
   def add_primary_member(submit = false)
@@ -121,5 +123,15 @@ RSpec.feature 'a user creating a new benefits application', js: true do
 
     click_on 'Delete'
     expect(page).not_to have_text('first')
+  end
+
+  context 'around eligibility' do
+    scenario 'I am for benefits' do
+      create_application(make_eligible = true)
+    end
+
+    scenario 'I am not for benefits' do
+      create_application(make_eligible = false)
+    end
   end
 end
