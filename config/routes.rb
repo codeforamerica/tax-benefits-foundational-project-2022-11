@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'validate_application' => 'benefits_applications#validate_application'
 
   get 'sign_application' => 'benefits_applications#sign_benefits_app', as: :sign_benefits_app
+  post 'save_signature' => 'benefits_applications#save_signature', as: :save_signature
 
   patch 'update_member/:id', to: 'benefits_applications#update_member', as: :member
   get 'members/:id', to: 'benefits_applications#edit_member', as: 'edit_member'

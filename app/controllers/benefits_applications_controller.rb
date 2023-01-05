@@ -84,11 +84,16 @@ class BenefitsApplicationsController < ApplicationController
     render :sign_benefits_app
   end
 
+  def save_signature
+    redirect_to root_path
+  end
+
   def validate_application
     benefit_app = current_benefit_app
 
     if benefit_app&.primary_member.present?
       benefit_app.update(submitted_at: Date.today)
+      # TODO: check if signature exists and redirect to root path without signing if so ?
       redirect_to sign_benefits_app_path
     else
       @members = current_members(benefit_app)
@@ -155,7 +160,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def benefits_permitted_params
-    params.require(:benefit_app).permit(:email_address, :address, :phone_number)
+    params.require(:benefit_app).permit(:email_address, :address, :phone_number, :signature, :signed_date)
   end
 
   def current_benefit_app
