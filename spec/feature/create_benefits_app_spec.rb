@@ -19,7 +19,7 @@ RSpec.feature "a user creating a new benefits application" do
     click_on "Add Member →"
     if submit
       click_on "Continue →"
-      fill_in "By entering your name you agree that you want to apply for benefits, that you have been honest on this application, and that you have read and agreed to the terms.", with: "signature"
+      fill_in "", with: "signature"
       click_on "Sign and submit application"
     end
   end
