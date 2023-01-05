@@ -19,11 +19,15 @@ class BenefitApp < ApplicationRecord
     end
   end
 
+  def update_income(monthly_income)
+    update({monthly_income: monthly_income}) && update_eligibility && reload
+  end
+
   def compute_eligibility
-    monthly_income.present? and monthly_income < ELIGIBILITY_THRESHOLD_AMOUNT
+    monthly_income < ELIGIBILITY_THRESHOLD_AMOUNT
   end
 
   def update_eligibility
-    update(eligible: self.compute_eligibility)
+    update({eligible: compute_eligibility})
   end
 end

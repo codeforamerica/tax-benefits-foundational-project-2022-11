@@ -40,8 +40,9 @@ class BenefitsApplicationsController < ApplicationController
     income = job_income_permitted_params["income"].to_i
     monthly_income = (pay_schedule == "monthly" ? income : income * 2)
 
-    if @benefit_app_form.update({monthly_income: monthly_income})
-      render @benefit_app_form.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
+    if @benefit_app_form.update_income(monthly_income)
+      view_name = @benefit_app_form.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
+      render view_name
     else
       render :ask_income
     end

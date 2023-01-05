@@ -66,6 +66,7 @@ RSpec.describe BenefitApp, type: :model do
         it "stores eligibility info on the model" do
           expect(eligible_app.eligible).to be_falsey
           expect(eligible_app.update_eligibility).to be_truthy
+          expect(eligible_app.reload).to be_truthy
           expect(eligible_app.eligible).to be_truthy
         end
       end
