@@ -41,11 +41,15 @@ class BenefitsApplicationsController < ApplicationController
     monthly_income = (pay_schedule == "monthly" ? income : income * 2)
 
     if @benefit_app_form.update_income(monthly_income)
-      view_name = @benefit_app_form.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
-      render view_name
+      redirect_to inform_of_eligibility_path
     else
       render :ask_income
     end
+  end
+
+  def inform_of_eligibility
+    view_name = current_benefit_app.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
+    render view_name
   end
 
   def delete_benefit_app

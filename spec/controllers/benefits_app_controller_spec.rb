@@ -103,12 +103,14 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       post :update_income_info, params: {benefit_app: {pay_schedule: "monthly", income: 5_000}}, session: { benefit_app_id: benefit_app.id }
       benefit_app.reload
       expect(benefit_app.monthly_income).to eql(5_000)
+      expect(response).to redirect_to(inform_of_eligibility_url)
     end
 
     it "updates the income for a biweekly-paid worker" do
       post :update_income_info, params: {benefit_app: {pay_schedule: "biweekly", income: 5_000}}, session: { benefit_app_id: benefit_app.id }
       benefit_app.reload
       expect(benefit_app.monthly_income).to eql(10_000)
+      expect(response).to redirect_to(inform_of_eligibility_url)
     end
   end
 
