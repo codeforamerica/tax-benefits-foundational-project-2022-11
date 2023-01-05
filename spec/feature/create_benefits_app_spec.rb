@@ -21,6 +21,7 @@ RSpec.feature "a user creating a new benefits application" do
       click_on "Continue →"
       fill_in "", with: "signature"
       click_on "Sign and submit application"
+      expect(page).to have_text "Submitted Applications"
     end
   end
 
@@ -31,7 +32,7 @@ RSpec.feature "a user creating a new benefits application" do
     click_on "Add Member →"
     if submit
       click_on "Continue →"
-      fill_in "signature box", with: "signature"
+      fill_in "", with: "signature"
       click_on "Sign and submit application"
     end
   end
