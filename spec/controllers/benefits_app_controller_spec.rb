@@ -122,14 +122,16 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
     it "redirects to root url with a valid benefit app" do
       freeze_time do
         post :validate_application, session: { benefit_app_id: valid_app.id }
-        expect(response).to redirect_to root_path
+        expect(response).to redirect_to sign_benefits_app_path
         valid_app.reload
-        expect(valid_app.submitted_at).not_to be_nil
+        expect(valid_app.submitted_at).to be_nil
+        post :save_signature, session: { benefit_app_id: valid_app.id }, params: { benefit_app: { signature: "signed" } }
+        valid_app.reload
         expect(valid_app.submitted_at).to eq Date.today
+        expect(response).to redirect_to root_path
       end
     end
 
-    # TODO: fix this test by making the action compatible with the custom form builder
     it "does not redirect to root url without primary member" do
       post :validate_application, session: { benefit_app_id: app_without_primary.id }
       expect(response).not_to redirect_to root_path

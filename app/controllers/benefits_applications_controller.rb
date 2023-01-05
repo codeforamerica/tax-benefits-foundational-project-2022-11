@@ -32,7 +32,6 @@ class BenefitsApplicationsController < ApplicationController
   def update_benefits_app
     @benefit_app_form = BenefitApp.find(params[:benefit_app_id])
     @members = current_members(@benefit_app_form)
-    # @members = current_members(@benefit_app)
 
     if @benefit_app_form.update(benefits_permitted_params)
       flash[:success] = "Benefits app successfully updated!"
@@ -79,12 +78,27 @@ class BenefitsApplicationsController < ApplicationController
     save_member(benefit_app, @member_form)
   end
 
+  def sign_benefits_app
+    @benefit_app_form = current_benefit_app
+    render :sign_benefits_app
+  end
+
+  def save_signature
+    @benefit_app_form = current_benefit_app
+    if @benefit_app_form.update(benefits_permitted_params.merge({submitted_at: Date.today}))
+      redirect_to root_path
+    end
+  end
+
   def validate_application
     benefit_app = current_benefit_app
 
     if benefit_app&.primary_member.present?
-      benefit_app.update(submitted_at: Date.today)
-      redirect_to root_url
+      if benefit_app.signature?
+        redirect_to root_path
+      else
+        redirect_to sign_benefits_app_path
+      end
     else
       @members = current_members(benefit_app)
       @member_form = benefit_app.build_primary_member
@@ -150,7 +164,7 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def benefits_permitted_params
-    params.require(:benefit_app).permit(:email_address, :address, :phone_number)
+    params.require(:benefit_app).permit(:email_address, :address, :phone_number, :signature, :signed_date)
   end
 
   def current_benefit_app
