@@ -44,7 +44,7 @@ RSpec.describe BenefitApp, type: :model do
       expect(benefit_app_with_empty_income).to be_valid
     end
 
-    describe "#compute_eligibility" do
+    context "eligiblity" do
       subject(:ineligible_app) {
         create(:benefit_app, monthly_income: BenefitApp::ELIGIBILITY_THRESHOLD_AMOUNT + 100)
       }
@@ -53,11 +53,21 @@ RSpec.describe BenefitApp, type: :model do
         create(:benefit_app, monthly_income: BenefitApp::ELIGIBILITY_THRESHOLD_AMOUNT - 100)
       }
 
-      it "fails for an ineligible amount" do
-        expect(ineligible_app.compute_eligibility).to be_falsey
+      describe "#compute_eligibility" do
+        it "fails for an ineligible amount" do
+          expect(ineligible_app.compute_eligibility).to be_falsey
+        end
+        it "passes for an eligible amount" do
+          expect(eligible_app.compute_eligibility).to be_truthy
+        end
       end
-      it "passes for an eligible amount" do
-        expect(eligible_app.compute_eligibility).to be_truthy
+
+      describe "#update_eligibility" do
+        it "stores eligibility info on the model" do
+          expect(eligible_app.eligible).to be_falsey
+          expect(eligible_app.update_eligibility).to be_truthy
+          expect(eligible_app.eligible).to be_truthy
+        end
       end
     end
 
