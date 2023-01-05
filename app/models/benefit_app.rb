@@ -1,6 +1,7 @@
 VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
 class BenefitApp < ApplicationRecord
+  ELIGIBILITY_THRESHOLD_AMOUNT = 1_000
   validates :address, presence: { message: "This field is required" }
   validates :email_address, presence: { message: "This field is required" },
             format: { with: VALID_EMAIL_REGEX, message: "Please enter a valid email address" }
@@ -16,5 +17,9 @@ class BenefitApp < ApplicationRecord
     else
       "No Primary Member"
     end
+  end
+
+  def compute_eligibility
+    monthly_income.present? and monthly_income < ELIGIBILITY_THRESHOLD_AMOUNT
   end
 end

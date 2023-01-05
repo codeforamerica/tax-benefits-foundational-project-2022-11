@@ -7,7 +7,8 @@ RSpec.describe BenefitApp, type: :model do
     subject(:benefit_app_without_phone_number) { build :benefit_app_without_phone_number }
     subject(:benefit_app_without_address) { build :benefit_app_without_address }
     subject(:benefit_app_with_invalid_phone_number) { build :benefit_app_with_invalid_phone_number }
-    subject(:benefit_app_with_primary_member) { create(:benefit_app, primary_member: build(:member, is_primary: true))}
+    subject(:benefit_app_with_primary_member) {
+ create(:benefit_app, primary_member: build(:member, is_primary: true))}
     subject(:benefit_app_with_non_primary_member) { build :benefit_app_with_non_primary_member }
     subject(:benefit_app_with_empty_income) { build :benefit_app_with_empty_income_info }
 
@@ -43,6 +44,23 @@ RSpec.describe BenefitApp, type: :model do
       expect(benefit_app_with_empty_income).to be_valid
     end
 
+    describe "#compute_eligibility" do
+      subject(:ineligible_app) {
+        create(:benefit_app, monthly_income: BenefitApp::ELIGIBILITY_THRESHOLD_AMOUNT + 100)
+      }
+
+      subject(:eligible_app) {
+        create(:benefit_app, monthly_income: BenefitApp::ELIGIBILITY_THRESHOLD_AMOUNT - 100)
+      }
+
+      it "fails for an ineligible amount" do
+        expect(ineligible_app.compute_eligibility).to be_falsey
+      end
+      it "passes for an eligible amount" do
+        expect(eligible_app.compute_eligibility).to be_truthy
+      end
+    end
+
     context "with associating members" do
       it "expects its primary member to be marked as one" do
         expect(benefit_app_with_primary_member.primary_member.is_primary).to be_truthy
@@ -52,11 +70,12 @@ RSpec.describe BenefitApp, type: :model do
         benefit_app = create(:benefit_app)
 
         secondary_members_params = attributes_for_list(:secondary_member, 3)
-        alleged_secondary_members = secondary_members_params.map { |params| benefit_app.secondary_members.build(params)}
+        alleged_secondary_members = secondary_members_params.map { |params|
+ benefit_app.secondary_members.build(params)}
 
         expect(benefit_app).to be_valid
         benefit_app.save
-        
+
         alleged_secondary_member_ids = alleged_secondary_members.map { |member| member.id }
 
         benefit_app.reload
