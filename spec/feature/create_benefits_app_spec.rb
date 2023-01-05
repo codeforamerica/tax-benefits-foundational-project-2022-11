@@ -111,8 +111,6 @@ RSpec.feature "a user creating a new benefits application" do
     click_on "Continue →"
     expect(page).to have_text("Tell us about your secondary member")
     click_on "Continue →"
-    fill_in "By entering your name you agree that you want to apply for benefits, that you have been honest on this application, and that you have read and agreed to the terms.", with: "signature"
-    click_on "Sign and submit application"
     click_on "Edit"
     expect(page).to have_field("What's your address?", with: "p sherman 42 wallaby way sydney")
     click_on "Continue →"

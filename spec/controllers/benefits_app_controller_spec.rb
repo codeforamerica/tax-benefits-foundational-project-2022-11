@@ -129,7 +129,6 @@ RSpec.describe BenefitsApplicationsController, type: :controller do
       end
     end
 
-    # TODO: fix this test by making the action compatible with the custom form builder
     it "does not redirect to root url without primary member" do
       post :validate_application, session: { benefit_app_id: app_without_primary.id }
       expect(response).not_to redirect_to root_path

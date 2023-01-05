@@ -85,7 +85,11 @@ class BenefitsApplicationsController < ApplicationController
   end
 
   def save_signature
-    redirect_to root_path
+    @benefit_app_form = current_benefit_app
+    current_date = Time.now
+    if @benefit_app_form.update(benefits_permitted_params.merge({signed_date: current_date}))
+      redirect_to root_path
+    end
   end
 
   def validate_application
@@ -93,8 +97,11 @@ class BenefitsApplicationsController < ApplicationController
 
     if benefit_app&.primary_member.present?
       benefit_app.update(submitted_at: Date.today)
-      # TODO: check if signature exists and redirect to root path without signing if so ?
-      redirect_to sign_benefits_app_path
+      if benefit_app.signature?
+        redirect_to root_path
+      else
+        redirect_to sign_benefits_app_path
+      end
     else
       @members = current_members(benefit_app)
       @member_form = benefit_app.build_primary_member
