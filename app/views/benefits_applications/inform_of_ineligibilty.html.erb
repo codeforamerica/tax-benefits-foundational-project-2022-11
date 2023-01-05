@@ -1,0 +1,10 @@
+<div class="card">
+  <div class="emoji emoji-size-155 emoji--clipboard"></div>
+  <h1>You May Not Be Eligible</h1>
+  <p>
+    You've reported making <strong><%= number_to_currency(@benefit_app_form.monthly_income, unit: "$") %></strong>,
+    which is outside the eligibility range for this service. Continuing will help
+    determine eligibility.
+  </p>
+  <%= link_to 'Continue →', new_member_path , class: 'button button--primary' %>
+</div>

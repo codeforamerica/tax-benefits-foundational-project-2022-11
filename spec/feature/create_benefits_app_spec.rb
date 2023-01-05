@@ -18,6 +18,8 @@ RSpec.feature "a user creating a new benefits application" do
     select 'Biweekly', from: 'What is your pay frequency?'
     fill_in "How much do you make?", with: 100
     click_on "Continue →"
+    expect(page).to have_text "You're Eligible"
+    click_on "Continue →"
   end
 
   def add_primary_member(submit=false)
