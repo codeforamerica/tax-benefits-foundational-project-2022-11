@@ -79,12 +79,17 @@ class BenefitsApplicationsController < ApplicationController
     save_member(benefit_app, @member_form)
   end
 
+  def sign_benefits_app
+    @benefit_app_form = current_benefit_app
+    render :sign_benefits_app
+  end
+
   def validate_application
     benefit_app = current_benefit_app
 
     if benefit_app&.primary_member.present?
       benefit_app.update(submitted_at: Date.today)
-      redirect_to root_url
+      redirect_to sign_benefits_app_path
     else
       @members = current_members(benefit_app)
       @member_form = benefit_app.build_primary_member

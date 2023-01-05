@@ -18,7 +18,9 @@ RSpec.feature "a user creating a new benefits application" do
     fill_in "What's your birthdate?", with: "03/12/1990"
     click_on "Add Member →"
     if submit
-      click_on "Continue"
+      click_on "Continue →"
+      fill_in "By entering your name you agree that you want to apply for benefits, that you have been honest on this application, and that you have read and agreed to the terms.", with: "signature"
+      click_on "Sign and submit application"
     end
   end
 
@@ -28,7 +30,9 @@ RSpec.feature "a user creating a new benefits application" do
     fill_in "What's your secondary member's birthdate?", with: "03/10/1990"
     click_on "Add Member →"
     if submit
-      click_on "Continue"
+      click_on "Continue →"
+      fill_in "signature box", with: "signature"
+      click_on "Sign and submit application"
     end
   end
 
@@ -47,6 +51,10 @@ RSpec.feature "a user creating a new benefits application" do
       expect(page).to have_text "last1"
 
       click_on "Continue →"
+
+      expect(page).to have_text "Type your full legal name here"
+
+      click_on "Sign and submit application"
 
       expect(page).to have_text "Submitted Applications"
       expect(page).to have_text "first last"
