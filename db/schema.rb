@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_04_192624) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_05_154619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_192624) do
     t.date "submitted_at"
     t.boolean "has_job", default: false
     t.integer "monthly_income", default: 0
+    t.boolean "eligible"
     t.index ["primary_member_id"], name: "index_benefit_apps_on_primary_member_id"
   end
 
@@ -35,6 +36,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_192624) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_primary", default: false
+    t.text "ssn"
     t.index ["benefit_app_id", "is_primary"], name: "multiple_assoc_of_secondary_member_to_benefit_app", where: "(is_primary = false)"
     t.index ["benefit_app_id", "is_primary"], name: "single_assoc_of_primary_member_to_benefit_app", unique: true, where: "(is_primary = true)"
     t.index ["benefit_app_id"], name: "index_members_on_benefit_app_id"

@@ -16,5 +16,6 @@ Rails.application.routes.draw do
   get 'job_status', to: 'benefits_applications#job_status_questions', as: :job_status_questions
   post 'save_job_status', to: 'benefits_applications#save_job_status', as: :save_job_status
   post 'update_income_info', to: 'benefits_applications#update_income_info', as: :update_income_info
+  get 'eligibility_status', to: 'benefits_applications#inform_of_eligibility', as: :inform_of_eligibility
   root "benefits_applications#index"
 end

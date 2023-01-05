@@ -38,14 +38,19 @@ class BenefitsApplicationsController < ApplicationController
     @benefit_app_form = current_benefit_app
     pay_schedule = job_income_permitted_params["pay_schedule"]
     income = job_income_permitted_params["income"].to_i
-    monthly_income = (pay_schedule == "monthly" ? income :  income * 2)
-    if @benefit_app_form.update({monthly_income: monthly_income})
-      redirect_to new_member_path
+    monthly_income = (pay_schedule == "monthly" ? income : income * 2)
+
+    if @benefit_app_form.update_income(monthly_income)
+      redirect_to inform_of_eligibility_path
     else
       render :ask_income
     end
+  end
 
-
+  def inform_of_eligibility
+    @benefit_app = current_benefit_app
+    view_name = @benefit_app.eligible ? :inform_of_eligibility : :inform_of_ineligibilty
+    render view_name
   end
 
   def delete_benefit_app

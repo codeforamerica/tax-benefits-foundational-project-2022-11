@@ -1,0 +1,9 @@
+<div class="card">
+  <h2 class="text--red">Based on your info, you may be over the pre-tax income limit.</h2>
+  <p>Your pre-tax income:</p>
+  <p class="text--centered text--red">
+    <strong><%= number_to_currency(@benefit_app.monthly_income * 12, unit: "$") %></strong>
+  </p>
+  <p>You can still apply but might not qualify.</p>
+  <%= link_to 'Apply anyway', new_member_path , class: 'button' %>
+</div>
