@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.feature 'a user creating a new benefits application', js: true do
+RSpec.feature 'a user creating a new benefits application' do
   def create_application(make_eligibile = true)
     visit root_path
     click_on 'New Application'
