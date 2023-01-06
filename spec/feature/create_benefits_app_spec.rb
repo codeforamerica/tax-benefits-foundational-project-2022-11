@@ -17,9 +17,10 @@ RSpec.feature 'a user creating a new benefits application' do
   def add_primary_member(submit=false)
     fill_in "What's your first name?", with: "first"
     fill_in "What's your last name?", with: "last"
-    fill_in "What's your birthdate?", with: "03/12/1990"
+    fill_in "What's your birthdate?", with: Date.today
     fill_in "What's your social security number (SSN)?", with: '123456789'
     click_on "Add Member →"
+    expect(page).to have_text "Tell us about your secondary member"
     if submit
       click_on "Continue →"
       fill_in "", with: "signature"
@@ -34,6 +35,8 @@ RSpec.feature 'a user creating a new benefits application' do
     fill_in "What's your secondary member's birthdate?", with: "03/10/1990"
     fill_in "What's your secondary member's social security number (SSN)?", with: '123556789'
     click_on "Add Member →"
+    expect(page).to have_text "Tell us about your secondary member"
+    expect(page).to have_text "first1 last1"
     if submit
       click_on "Continue →"
       fill_in "", with: "signature"
