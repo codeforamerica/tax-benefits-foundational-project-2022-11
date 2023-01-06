@@ -1,0 +1,8 @@
+<%= form_with model: @benefit_app_form, local: true, method: :post, url: update_income_info_path, builder: FoundationalProjectFormBuilder, class: "form-card" do |f| %>
+  <h2>Tell us about your monthly income.</h2>
+  <%= f.vita_min_select(:pay_schedule, "What is your pay frequency?", [
+    ["Monthly",  "monthly"],
+    ["Biweekly",  "biweekly"]]) %>
+  <%= f.vita_min_text_field(:income, "How much do you make?", options: {type: :number}) %>
+  <%= f.button('Continue →', type: :submit, class: "button button--wide button--primary spacing-above-60") %>
+<%end %>

@@ -45,6 +45,20 @@ class FoundationalProjectFormBuilder < Cfa::Styleguide::CfaFormBuilder
     label_text.html_safe
   end
 
+  def h1_label_contents(label_text, help_text, optional = false)
+    label_text = <<~HTML
+      <h1 class="form-question">#{label_text + optional_text(optional)}</h1>
+    HTML
+
+    if help_text
+      label_text << <<~HTML
+        <p class="text--help">#{help_text}</p>
+      HTML
+    end
+
+    label_text.html_safe
+  end
+
   def vita_min_select(
     method,
     label_text,
@@ -58,7 +72,7 @@ class FoundationalProjectFormBuilder < Cfa::Styleguide::CfaFormBuilder
 
     formatted_label = label(
       method,
-      h1_label_contents(label_text, options[:help_text], options[:optional])
+      h2_label_contents(label_text, options[:help_text], options[:optional])
     )
     html_options_with_errors = html_options.merge(error_attributes(method: method))
 
@@ -335,5 +349,51 @@ class FoundationalProjectFormBuilder < Cfa::Styleguide::CfaFormBuilder
 
   def continue(value = I18n.t("general.continue"))
     submit(value, class: "button button--primary button--wide")
+  end
+
+  def cfa_radio_set(
+    method,
+    label_text: "",
+    collection:,
+    help_text: nil,
+    layouts: ["block"],
+    legend_class: ""
+  )
+    <<~HTML.html_safe
+          <fieldset class="form-group#{error_state(object, method)}">
+            #{fieldset_label_contents(
+      label_text: label_text,
+      help_text: help_text,
+      legend_class: legend_class,
+      )}
+          #{cfa_radio_button(method, collection, layouts)}
+          #{errors_for(object, method)}
+          </fieldset>
+    HTML
+  end
+
+  def cfa_radio_button(method, collection, layouts)
+    classes = layouts.map { |layout| "input-group--#{layout}" }.join(" ")
+    options = { class: classes }.merge(error_attributes(method: method))
+
+    radiogroup_tag = @template.tag(:radiogroup, options, true)
+
+    radio_collection = collection.map do |item|
+      item = { value: item, label: item } unless item.is_a?(Hash)
+
+      input_html = item.fetch(:input_html, {})
+
+      <<~HTML.html_safe
+            <label class="radio-button">
+              #{radio_button(method, item[:value], input_html)}
+              #{item[:label]}
+            </label>
+      HTML
+    end
+    <<~HTML.html_safe
+          #{radiogroup_tag}
+                  #{radio_collection.join}
+                      </radiogroup>
+    HTML
   end
 end
