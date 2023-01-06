@@ -61,7 +61,6 @@ commands:
     steps:
       - run: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run: bundle exec rake db:create db:schema:load
-      - run: bundle exec rails db:migrate RAILS_ENV=test
   setup_webdriver:
     description: Install Ruby webdriver
     steps:
